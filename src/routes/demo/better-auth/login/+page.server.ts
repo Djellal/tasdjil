@@ -2,11 +2,12 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import type { PageServerLoad } from './$types';
 import { auth } from '$lib/server/auth';
+import { localizeHref } from '$lib/paraglide/runtime';
 import { APIError } from 'better-auth/api';
 
 export const load: PageServerLoad = (event) => {
 	if (event.locals.user) {
-		return redirect(302, '/demo/better-auth');
+		return redirect(302, localizeHref('/demo/better-auth'));
 	}
 	return {};
 };
@@ -32,7 +33,7 @@ export const actions: Actions = {
 			return fail(500, { message: 'Unexpected error' });
 		}
 
-		return redirect(302, '/demo/better-auth');
+		return redirect(302, localizeHref('/demo/better-auth'));
 	},
 	signUpEmail: async (event) => {
 		const formData = await event.request.formData();
@@ -56,6 +57,6 @@ export const actions: Actions = {
 			return fail(500, { message: 'Unexpected error' });
 		}
 
-		return redirect(302, '/demo/better-auth');
+		return redirect(302, localizeHref('/demo/better-auth'));
 	}
 };

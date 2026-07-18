@@ -2,7 +2,7 @@ import { asc, eq } from 'drizzle-orm';
 import { fail } from '@sveltejs/kit';
 import { requireAdmin } from '$lib/server/auth-guard';
 import { db } from '$lib/server/db';
-import { faculte } from '$lib/server/db/schema';
+import { domaine, faculte } from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
 
 function readFaculty(formData: FormData) {
@@ -62,6 +62,15 @@ export const actions: Actions = {
 		const id = readId(await request.formData());
 
 		if (!id) return fail(400, { message: 'Invalid faculty.' });
+
+		const dependentDomaine = await db
+			.select({ id: domaine.id })
+			.from(domaine)
+			.where(eq(domaine.facultyId, id))
+			.limit(1);
+		if (dependentDomaine.length) {
+			return fail(409, { message: 'Delete this faculty’s domaines first.' });
+		}
 
 		const deleted = await db
 			.delete(faculte)

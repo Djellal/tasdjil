@@ -1,10 +1,11 @@
 import { APIError } from 'better-auth/api';
 import { fail, redirect } from '@sveltejs/kit';
+import { localizeHref } from '$lib/paraglide/runtime';
 import { auth } from '$lib/server/auth';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = ({ locals }) => {
-	if (locals.user) redirect(303, '/');
+	if (locals.user) redirect(303, localizeHref('/'));
 };
 
 export const actions: Actions = {
@@ -27,6 +28,6 @@ export const actions: Actions = {
 			return fail(500, { email, message: 'An unexpected error occurred. Please try again.' });
 		}
 
-		redirect(303, '/');
+		redirect(303, localizeHref('/'));
 	}
 };

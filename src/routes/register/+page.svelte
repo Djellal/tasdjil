@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import type { Pathname } from '$app/types';
 	import { resolve } from '$app/paths';
+	import { localizeHref } from '$lib/paraglide/runtime';
 	import type { ActionData } from './$types';
 
 	let { form }: { form: ActionData } = $props();
@@ -48,6 +50,6 @@
 	</form>
 
 	<p class="auth-card__footer">
-		Already have an account? <a href={resolve('/login')}>Sign in</a>
+		Already have an account? <a href={resolve(localizeHref('/login') as Pathname)}>Sign in</a>
 	</p>
 </section>
