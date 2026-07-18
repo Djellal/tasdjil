@@ -453,6 +453,15 @@ a {
 	grid-template-columns: 1.5fr 1fr 1fr auto;
 }
 
+.entity-form--session {
+	grid-template-columns: 1.25fr 1fr 1fr auto auto;
+}
+
+.entity-form--parameters {
+	max-width: 36rem;
+	grid-template-columns: minmax(0, 1fr) auto;
+}
+
 .entity-form__field {
 	display: grid;
 	min-width: 0;
@@ -550,7 +559,9 @@ a {
 
 @media (max-width: 60rem) {
 	.entity-form--domaine,
-	.entity-form--speciality {
+	.entity-form--speciality,
+	.entity-form--session,
+	.entity-form--parameters {
 		grid-template-columns: repeat(2, minmax(0, 1fr));
 	}
 }
@@ -583,7 +594,9 @@ a {
 	}
 
 	.entity-form--domaine,
-	.entity-form--speciality {
+	.entity-form--speciality,
+	.entity-form--session,
+	.entity-form--parameters {
 		grid-template-columns: 1fr;
 	}
 

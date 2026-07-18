@@ -55,6 +55,8 @@
 						<details class="admin-menu">
 							<summary>Admin</summary>
 							<div class="admin-menu__submenu">
+								<a href={localizedPath('/admin/parameters')}>Parameters</a>
+								<a href={localizedPath('/admin/sessions')}>Sessions</a>
 								<a href={localizedPath('/admin/faculties')}>Faculties</a>
 								<a href={localizedPath('/admin/domaines')}>Domaines</a>
 								<a href={localizedPath('/admin/specialities')}>Specialities</a>

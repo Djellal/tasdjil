@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { index, integer, pgEnum, pgTable, serial, text } from 'drizzle-orm/pg-core';
+import { boolean, date, index, integer, pgEnum, pgTable, serial, text } from 'drizzle-orm/pg-core';
 
 export const task = pgTable('task', {
 	id: serial('id').primaryKey(),
@@ -41,6 +41,21 @@ export const speciality = pgTable(
 	},
 	(table) => [index('speciality_domaine_id_idx').on(table.domaineId)]
 );
+
+export const registrationSession = pgTable('registration_session', {
+	id: serial('id').primaryKey(),
+	nameSession: text('name_session').notNull(),
+	startRegistrationsDate: date('start_registrations_date').notNull(),
+	endRegistrationsDate: date('end_registrations_date').notNull(),
+	registrationOpened: boolean('registration_opened').notNull().default(false)
+});
+
+export const applicationParameter = pgTable('application_parameter', {
+	id: integer('id').primaryKey().default(1),
+	currentSessionId: integer('current_session_id').references(() => registrationSession.id, {
+		onDelete: 'set null'
+	})
+});
 
 export const faculteRelations = relations(faculte, ({ many }) => ({
 	domaines: many(domaine)
