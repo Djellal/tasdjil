@@ -1,0 +1,197 @@
+﻿Id,NomSpecialite,domaineId
+10,Génie Chimique,3
+11,Génie de l'environnement,3
+12,Génie Pharmaceutique,3
+13,Génie électrochimique,3
+14,Commande électrique,3
+15,Réseaux électriques,3
+16,Energies renouvelables en electrotechnique,3
+17,Electrotechnique industrielle,3
+18,Hydrogène vert vecteur d'énergie,3
+19,Automatique et systèmes,3
+20,Automatique et informatique industrielle,3
+21,Automatisation industrielle et process,3
+22,Réseaux et télécommunications,3
+23,Electronique des systèmes embarqués,3
+24,Instrumentations,3
+25,Microélectronique,3
+26,Energétique,3
+27,Voies et ouvrages d'art,3
+28,Matériaux en génie civil,3
+29,Structures,3
+31,Biochimie Appliquée,6
+32,Immunologie,6
+34,Physiologie cellulaire et physiopathologie,6
+35,Parasitologie,6
+36,Microbiologie,6
+37,Microbiologie Appliquée,6
+38,Microbiologie et contrôle de la qualité,6
+39,Protection des écosystèmes,6
+40,Ecologie,6
+41,Biodiversité et environnement,6
+42,Biodiversité et physiologie végétale,6
+43,Biotechnologie et valorisation des plantes,6
+44,Production animale,6
+45,Production végétale,6
+46,Protection des végétaux,6
+47,Aménagement hydroagricole,6
+48,Mathématiques Appliquées,7
+49,Analyse non linéaire et EDP,7
+50,Optimisation et contrôle,7
+51,Algèbre et géométrie,7
+52,Informatique Quantique,7
+53,Physique des matériaux,8
+54,Physique des rayonnements,8
+55,Physique Médicale,8
+56,Physique Théorique,8
+57,Physique Energétique,8
+58,Chimie Physique,8
+59,Chimie de l'environnement,8
+60,Chimie Pharmaceutique,8
+61,Chimie Analytique et Analyse,8
+62,Economie internationale,9
+63,Economie monetaire et financiere,9
+65,Economie et Gestion de l'Entreprise,9
+66,Gestion des resources humaines,9
+67,Management,9
+68,Management Financier,9
+69,Economie de la santé et management hospitalier,9
+70,"finance de l""entreprise",9
+71,finance et banques islamiques,9
+72,finance des banques et assurances,9
+73,Comptabilité et Audit,9
+74,Comptabilité et Fiscalité,9
+75,Comptabilité,9
+76,Marketing digital-Presentiel,9
+78,Marketing touristique et hospitalier,9
+79,finance et commerce international,9
+80,Marketing des services,9
+84,Architecture ,10
+85,"Ressources minérales, Géomatériaux et Environnement",12
+86,Géologie de l’ingénieur et Géotechnique,12
+87,Hydrogéologie,12
+90,Biotechnologie et santé,6
+91,Réseaux et systèmes distribués,7
+92,Ingénierie des données et technologie du web,7
+93,Fondement et ingénierie de l'information et de l'image,7
+97,Génie des Procédés,14
+98,Génie Mécanique,14
+99,Génie civil,14
+100,Electronique,14
+101,Electrotechnique,14
+102,Automatique,14
+103,Travaux public,14
+104,Télécommunications,14
+105,Economie internationale,15
+106,Economie monetaire et financiere,15
+107,Economie et Gestion de l'Entreprise,15
+109,Gestion des resources humaines,15
+110,Management Financier,15
+111,Management,15
+112,Economie de la santé et management hospitalier,15
+113,Comptabilité,15
+114,Comptabilité et Fiscalité,15
+115,Comptabilité et Audit,15
+116,finance et banques islamiques,15
+117,"finance de l""entreprise",15
+118,finance des banques et assurances,15
+119,Marketing des services,15
+120,Marketing touristique et hospitalier,15
+121,Marketing digital-Presentiel,15
+123,finance et commerce international,15
+124,Economie et gestion des transports,15
+125,Comptabilité,16
+126,finance,16
+127,Gestion des resources humaines,16
+128,Management,16
+129,Management Financier,16
+130,Marketing,16
+131,finance et commerce international,16
+132,Economie internationale,16
+133,Economie monetaire et financiere,16
+135,Economie et Gestion de l'Entreprise,16
+136,Technologie des Matériaux,14
+64,Economie Quantitative et Statistiques,9
+81,Economie des transports et de la logistique,9
+108,Economie Quantitative et Statistiques,15
+137,Matériaux pour l'Optique et la Mécanique,13
+138,Génie Chimique,13
+139,Génie de l'environnement,13
+140,Génie électrochimique,13
+141,Génie Pharmaceutique,13
+142,Commande électrique,13
+143,Energies renouvelables en electrotechnique,13
+144,Electrotechnique industrielle,13
+145,Electronique des systèmes embarqués,13
+146,Energétique,13
+147,Réseaux électriques,13
+148,Réseaux et télécommunications,13
+150,Hydrogène vert vecteur d'énergie,13
+151,Automatique et systèmes,13
+152,Automatique et informatique industrielle,13
+153,Automatisation industrielle et process,13
+154,Voies et ouvrages d'art,13
+155,Structures,13
+157,Matériaux en génie civil,13
+158,Microélectronique,13
+159,Géotechnique,13
+160,Instrumentations,13
+161,Cyber Security,7
+162,Pharmacotoxicologie,6
+163,Biochimie Appliquée,17
+164,Immunologie,17
+165,Pharmacotoxicologie,17
+166,Microbiologie Appliquée,17
+167,Microbiologie,17
+168,Microbiologie et Contrôle de la Qualité,17
+169,Physiologie Cellulaire et Physiopathologie,17
+170,Parasitologie,17
+171,Protection des Ecosystèmes,17
+172,Biodiversité et Environnement,17
+173,Ecologie,17
+174,Biodiversité et Physiologie Végétale,17
+175,Biotechnologie et Valorisation des Plantes,17
+176,Biotechnologie et Santé,17
+177,Ingénierie des Données et Technologie Web,18
+178,Réseaux et Systèmes Distribués,18
+179,Fondements et Ingénierie de l'Information et de l'Image,18
+180,Cyber Security,18
+181,Informatique Quantique,18
+182,Mathématiques Appliquées,18
+183,Algèbre te Géométrie,18
+184,Analyse Non Linéaire et Equations DP,18
+185,Optimisation et Contrôle,18
+186,Chimie de l’Environnement,19
+187,Chimie Physique,19
+188,Chimie Pharmaceutique,19
+189,Chimie Analytique et Analyse,19
+190,Physique des Matériaux,19
+191,Physique des rayonnements,19
+192,Physique Médicale,19
+193,Physique Théorique,19
+194,Physique Energétique,19
+195,Production Animale,17
+196,Production végétale,17
+197,Protection des végétaux,17
+198,Aménagement hydroagricole,17
+199,"Ressources minérales, Géomatériaux et Environnement",20
+200,Géologie de l'Ingénieur et Géotechnique,20
+201,Hydrogéologie,20
+202,"Villes, dynamique spatiale et Gestion",20
+203,Architecture,21
+204,Aménagement urbain,12
+205,Architecture,22
+207,Economie Quantitative et Statistiques,16
+208,Economie Numérique et Analyse des donnés,16
+209,Intelligence économique et analyse des donnés,9
+210,Economie Circulaire,9
+211,Assurance Takaful,9
+215,Géotechnique,3
+217,Génie des polymères,23
+218,Matériaux Polymères,23
+219,Génie des polymères,24
+220,Matériaux Polymères,24
+221,Matériaux pour l'Optique et la Mécanique,25
+222,Métrologie,25
+226,Technologie des Materiaux,26
+228,Matériaux pour l'Optique et la Mécanique,27

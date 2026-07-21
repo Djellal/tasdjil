@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1784223686295,
-      "tag": "0000_majestic_dracula",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1784224433107,
-      "tag": "0001_stale_red_hulk",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1784301718747,
-      "tag": "0002_peaceful_phil_sheldon",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1784385467871,
-      "tag": "0003_icy_terrax",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1784386119733,
-      "tag": "0004_windy_tiger_shark",
+      "when": 1784622746763,
+      "tag": "0000_init",
       "breakpoints": true
     }
   ]

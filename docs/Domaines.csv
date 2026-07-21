@@ -1,0 +1,23 @@
+﻿Id,facultyId,NomDomaine,Niveau
+6,4,sciences de la nature et de la vie,Licence
+7,3,Mathématiques et Informatique,Licence
+8,2,Sciences de la matière,Licence
+3,2,Science et Technologie,Master2
+10,6,Architecture Urbanisme et Métiers de la Ville ,Licence
+12,6,Sciences de la Terre et de L'univers ,Licence
+13,2,Science et Technologie,Licence
+14,2,Science et Technologie,Master2
+9,5,"SEGC-Sc. Economiques, Gestion et Commerce",Licence
+15,5,"SEGC-Sc. Economiques, Gestion et Commerce",Master1
+16,5,"SEGC-Sc. Economiques, Gestion et Commerce",Master2
+17,4,Science de la Nature et de la Vie,Master1
+18,3,Mathématiques et Informatique,Master1
+19,2,Sciences de la matière,Master1
+20,6,Sciences de la Terre et de l'Univers,Master1
+21,6,"Architecture, Urbanisme et Métiers de la Ville",Master1
+22,6,"Architecture, Urbanisme et Métiers de la Ville",Master2
+23,2,Polymères,Licence
+24,2,Polymères,Master1
+25,7,Optique et Mécanique de précision,Licence
+26,7,Optique et Mécanique de précision,Master2
+27,7,Optique et Mécanique de précision,Master1
