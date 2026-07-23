@@ -1,19 +1,53 @@
 <script lang="ts">
 	import type { Pathname } from '$app/types';
 	import { resolve } from '$app/paths';
+	import { page } from '$app/state';
 	import * as m from '$lib/paraglide/messages.js';
-	import { localizeHref } from '$lib/paraglide/runtime';
+	import { baseLocale, extractLocaleFromUrl, localizeHref } from '$lib/paraglide/runtime';
+	import type { PageData } from './$types';
 	import {
 		ArrowRight,
 		CalendarDays,
 		Check,
+		Circle,
 		ClipboardCheck,
 		FileText,
 		GraduationCap,
 		UserPlus
 	} from '@lucide/svelte';
 
+	let { data }: { data: PageData } = $props();
+	let locale = $derived(extractLocaleFromUrl(page.url) ?? baseLocale);
+	let registrationOpen = $derived(Boolean(data.currentSession?.registrationOpened));
+	let sessionStatus = $derived(
+		!data.currentSession
+			? m.home_status_unavailable()
+			: registrationOpen
+				? m.home_status_open()
+				: m.home_status_closed()
+	);
+	let registrationDates = $derived(
+		data.currentSession
+			? formatDateRange(
+					data.currentSession.startRegistrationsDate,
+					data.currentSession.endRegistrationsDate,
+					locale
+				)
+			: m.home_registration_dates_unavailable()
+	);
+
 	const localizedPath = (path: Pathname) => resolve(localizeHref(path) as Pathname);
+
+	function formatDateRange(start: string, end: string, language: typeof locale) {
+		const localeNames = { ar: 'ar-DZ', fr: 'fr-DZ', en: 'en-GB' } as const;
+		const formatter = new Intl.DateTimeFormat(localeNames[language], {
+			day: 'numeric',
+			month: 'long',
+			year: 'numeric',
+			timeZone: 'UTC'
+		});
+		return formatter.formatRange(new Date(`${start}T00:00:00Z`), new Date(`${end}T00:00:00Z`));
+	}
 </script>
 
 <svelte:head>
@@ -24,13 +58,35 @@
 	<section class="hero" aria-labelledby="home-title">
 		<div class="hero__content">
 			<p class="eyebrow"><GraduationCap size={17} /> {m.home_university()}</p>
-			<p class="hero__year">{m.home_admissions_year()}</p>
-			<h1 id="home-title">{m.home_title()}</h1>
-			<p class="hero__intro">{m.home_intro()}</p>
+			<div class="hero__meta">
+				<p class="hero__year">{data.currentSession?.nameSession ?? m.home_admissions_year()}</p>
+				<span class:session-status--open={registrationOpen} class="session-status">
+					<Circle size={9} fill="currentColor" />
+					{sessionStatus}
+				</span>
+			</div>
+			<h1 id="home-title">
+				{data.currentSession
+					? registrationOpen
+						? m.home_title()
+						: m.home_closed_title()
+					: m.home_unavailable_title()}
+			</h1>
+			<p class="hero__intro">
+				{data.currentSession
+					? registrationOpen
+						? m.home_intro()
+						: m.home_closed_intro()
+					: m.home_unavailable_intro()}
+			</p>
 			<div class="hero__actions">
-				<a class="button button--primary" href={localizedPath('/registration-application')}>
-					{m.home_apply_now()} <span class="directional-icon"><ArrowRight size={17} /></span>
-				</a>
+				{#if registrationOpen}
+					<a class="button button--primary" href={localizedPath('/registration-application')}>
+						{m.home_apply_now()} <span class="directional-icon"><ArrowRight size={17} /></span>
+					</a>
+				{:else}
+					<span class="button button--disabled">{m.home_applications_closed()}</span>
+				{/if}
 				<a class="button button--secondary" href={localizedPath('/register')}>
 					<UserPlus size={17} />
 					{m.home_create_account()}
@@ -42,8 +98,14 @@
 			<span class="period-card__icon"><CalendarDays size={26} /></span>
 			<div>
 				<p id="period-title">{m.home_registration_period()}</p>
-				<strong>{m.home_registration_dates()}</strong>
-				<small>{m.home_registration_notice()}</small>
+				<strong>{registrationDates}</strong>
+				<small>
+					{!data.currentSession
+						? m.home_registration_unavailable_notice()
+						: registrationOpen
+							? m.home_registration_notice()
+							: m.home_registration_closed_notice()}
+				</small>
 			</div>
 		</aside>
 	</section>
@@ -141,10 +203,35 @@
 	}
 
 	.hero__year {
-		margin: 1.5rem 0 0.5rem;
+		margin: 0;
 		color: #d4ebdf;
 		font-size: 0.875rem;
 		font-weight: 700;
+	}
+
+	.hero__meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.75rem;
+		margin: 1.5rem 0 0.5rem;
+	}
+
+	.session-status {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		border-radius: 999px;
+		background: rgb(255 255 255 / 12%);
+		padding: 0.3rem 0.625rem;
+		color: #e8d9bd;
+		font-size: 0.6875rem;
+		font-weight: 800;
+	}
+
+	.session-status--open {
+		background: rgb(212 235 223 / 16%);
+		color: #bde7d1;
 	}
 
 	.hero h1 {
@@ -211,6 +298,12 @@
 
 	.button--secondary:hover {
 		background: rgb(255 255 255 / 14%);
+	}
+
+	.button--disabled {
+		background: rgb(255 255 255 / 10%);
+		color: #cfe1db;
+		cursor: not-allowed;
 	}
 
 	:global([dir='rtl']) .directional-icon {
