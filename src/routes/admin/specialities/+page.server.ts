@@ -1,6 +1,6 @@
 import { asc, eq } from 'drizzle-orm';
-import { fail } from '@sveltejs/kit';
-import { requireAdmin } from '$lib/server/auth-guard';
+import { error, fail } from '@sveltejs/kit';
+import { requireAdminOrAdminFac } from '$lib/server/auth-guard';
 import { db } from '$lib/server/db';
 import { domaine, faculte, speciality } from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
@@ -27,37 +27,67 @@ async function domaineExists(id: number) {
 	return savedDomaine.length > 0;
 }
 
-export const load: PageServerLoad = async ({ locals }) => {
-	requireAdmin(locals);
+async function domaineBelongsToFaculty(domaineId: number, facultyId: number) {
+	const record = await db
+		.select({ facultyId: domaine.facultyId })
+		.from(domaine)
+		.where(eq(domaine.id, domaineId))
+		.limit(1);
+	return record.length > 0 && record[0].facultyId === facultyId;
+}
 
-	return {
-		domaines: await db
-			.select({
-				id: domaine.id,
-				name: domaine.name,
-				studyLevel: domaine.studyLevel,
-				facultyName: faculte.name
-			})
-			.from(domaine)
-			.innerJoin(faculte, eq(domaine.facultyId, faculte.id))
-			.orderBy(asc(domaine.name)),
-		specialities: await db
-			.select({
-				id: speciality.id,
-				domaineId: speciality.domaineId,
-				name: speciality.name,
-				nameAr: speciality.nameAr,
-				domaineName: domaine.name
-			})
-			.from(speciality)
-			.innerJoin(domaine, eq(speciality.domaineId, domaine.id))
-			.orderBy(asc(speciality.name))
-	};
+export const load: PageServerLoad = async ({ locals }) => {
+	const user = requireAdminOrAdminFac(locals);
+	const isAdmin = user.role === 'admin';
+	const facultyId = user.facultyId;
+
+	const domainesQuery = isAdmin
+		? db
+				.select({
+					id: domaine.id,
+					name: domaine.name,
+					studyLevel: domaine.studyLevel,
+					facultyName: faculte.name
+				})
+				.from(domaine)
+				.innerJoin(faculte, eq(domaine.facultyId, faculte.id))
+		: db
+				.select({
+					id: domaine.id,
+					name: domaine.name,
+					studyLevel: domaine.studyLevel,
+					facultyName: faculte.name
+				})
+				.from(domaine)
+				.innerJoin(faculte, eq(domaine.facultyId, faculte.id))
+				.where(eq(domaine.facultyId, facultyId!));
+
+	const domaines = await domainesQuery.orderBy(asc(domaine.name));
+
+	const domaineIds = domaines.map((d) => d.id);
+
+	const specialities =
+		domaineIds.length > 0
+			? await db
+					.select({
+						id: speciality.id,
+						domaineId: speciality.domaineId,
+						name: speciality.name,
+						nameAr: speciality.nameAr,
+						domaineName: domaine.name
+					})
+					.from(speciality)
+					.innerJoin(domaine, eq(speciality.domaineId, domaine.id))
+					.where(domaineIds.length === 1 ? eq(speciality.domaineId, domaineIds[0]) : undefined)
+					.orderBy(asc(speciality.name))
+			: [];
+
+	return { domaines, specialities };
 };
 
 export const actions: Actions = {
 	create: async ({ locals, request }) => {
-		requireAdmin(locals);
+		const user = requireAdminOrAdminFac(locals);
 		const values = readSpeciality(await request.formData());
 
 		if (!values.domaineId || !values.name || !values.nameAr) {
@@ -67,11 +97,17 @@ export const actions: Actions = {
 			return fail(400, { message: 'The selected domaine does not exist.' });
 		}
 
+		if (user.role === 'adminfac') {
+			if (!(await domaineBelongsToFaculty(values.domaineId, user.facultyId!))) {
+				error(403, 'You can only create specialities for domaines in your own faculty.');
+			}
+		}
+
 		await db.insert(speciality).values({ ...values, domaineId: values.domaineId });
 		return { success: true, message: 'Speciality created successfully.' };
 	},
 	update: async ({ locals, request }) => {
-		requireAdmin(locals);
+		const user = requireAdminOrAdminFac(locals);
 		const formData = await request.formData();
 		const id = readId(formData.get('id'));
 		const values = readSpeciality(formData);
@@ -84,6 +120,12 @@ export const actions: Actions = {
 			return fail(400, { message: 'The selected domaine does not exist.' });
 		}
 
+		if (user.role === 'adminfac') {
+			if (!(await domaineBelongsToFaculty(values.domaineId, user.facultyId!))) {
+				error(403, 'You can only update specialities for domaines in your own faculty.');
+			}
+		}
+
 		const updated = await db
 			.update(speciality)
 			.set({ ...values, domaineId: values.domaineId })
@@ -94,10 +136,23 @@ export const actions: Actions = {
 		return { success: true, message: 'Speciality updated successfully.' };
 	},
 	delete: async ({ locals, request }) => {
-		requireAdmin(locals);
+		const user = requireAdminOrAdminFac(locals);
 		const id = readId((await request.formData()).get('id'));
 
 		if (!id) return fail(400, { message: 'Invalid speciality.' });
+
+		if (user.role === 'adminfac') {
+			const specialityRecord = await db
+				.select({ domaineId: speciality.domaineId })
+				.from(speciality)
+				.where(eq(speciality.id, id))
+				.limit(1);
+
+			if (!specialityRecord.length) return fail(404, { message: 'Speciality not found.' });
+			if (!(await domaineBelongsToFaculty(specialityRecord[0].domaineId, user.facultyId!))) {
+				error(403, 'You can only delete specialities from your own faculty.');
+			}
+		}
 
 		const deleted = await db
 			.delete(speciality)

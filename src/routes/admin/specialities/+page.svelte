@@ -1,8 +1,91 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
+	import { deserialize } from '$app/forms';
+	import {
+		createTable,
+		tableFeatures,
+		rowSortingFeature,
+		rowPaginationFeature
+	} from '@tanstack/svelte-table';
+	import { createSortedRowModel, createPaginatedRowModel, sortFns } from '@tanstack/table-core';
+	import type { ColumnDef } from '@tanstack/table-core';
+	import DataTable from '$lib/components/DataTable.svelte';
+	import '$lib/components/data-table.css';
 	import type { ActionData, PageData } from './$types';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
+	let editingRowId = $state<number | null>(null);
+
+	const features = tableFeatures({
+		rowSortingFeature,
+		rowPaginationFeature,
+		sortedRowModel: createSortedRowModel(),
+		paginatedRowModel: createPaginatedRowModel(),
+		sortFns
+	});
+
+	type Speciality = (typeof data.specialities)[number];
+
+	const columns: ColumnDef<typeof features, Speciality>[] = [
+		{
+			accessorKey: 'domaineName',
+			header: 'Domaine'
+		},
+		{
+			accessorKey: 'name',
+			header: 'Name'
+		},
+		{
+			accessorKey: 'nameAr',
+			header: 'Arabic Name'
+		},
+		{
+			id: 'actions',
+			header: 'Actions',
+			enableSorting: false
+		}
+	];
+
+	const table = createTable({
+		features,
+		columns,
+		get data() {
+			return data.specialities;
+		},
+		initialState: {
+			pagination: {
+				pageIndex: 0,
+				pageSize: 20
+			}
+		}
+	});
+
+	async function handleSave(event: Event, rowId: number) {
+		const button = event.currentTarget as HTMLButtonElement;
+		const tr = button.closest('tr');
+		if (!tr) return;
+
+		const formData = new FormData();
+		formData.append('id', String(rowId));
+
+		tr.querySelectorAll('input[name], select[name]').forEach((el) => {
+			const input = el as HTMLInputElement | HTMLSelectElement;
+			formData.set(input.name, input.value);
+		});
+
+		const response = await fetch('?/update', {
+			method: 'POST',
+			body: formData
+		});
+		const result = deserialize(await response.text());
+
+		if (result.type === 'success') {
+			editingRowId = null;
+		}
+
+		await invalidateAll();
+	}
 </script>
 
 <svelte:head><title>Specialities | Tasdjil Admin</title></svelte:head>
@@ -58,53 +141,89 @@
 	<section class="admin-panel">
 		<h2>Existing specialities ({data.specialities.length})</h2>
 
-		{#if data.specialities.length}
-			<div class="entity-list">
-				{#each data.specialities as savedSpeciality (savedSpeciality.id)}
-					<div class="entity-row">
-						<form
-							class="entity-form entity-form--speciality"
-							method="post"
-							action="?/update"
-							use:enhance
-						>
-							<input type="hidden" name="id" value={savedSpeciality.id} />
-							<label class="entity-form__field">
-								Domaine
-								<select name="domaineId" value={savedSpeciality.domaineId} required>
-									{#each data.domaines as savedDomaine (savedDomaine.id)}
-										<option value={savedDomaine.id}>
-											{savedDomaine.name} — {savedDomaine.studyLevel} — {savedDomaine.facultyName}
-										</option>
-									{/each}
-								</select>
-							</label>
-							<label class="entity-form__field">
-								Name
-								<input type="text" name="name" value={savedSpeciality.name} required />
-							</label>
-							<label class="entity-form__field">
-								Arabic name
-								<input
-									type="text"
-									name="nameAr"
-									value={savedSpeciality.nameAr}
-									dir="rtl"
-									required
-								/>
-							</label>
-							<button type="submit">Save</button>
-						</form>
-
-						<form class="entity-row__delete" method="post" action="?/delete" use:enhance>
-							<input type="hidden" name="id" value={savedSpeciality.id} />
-							<button type="submit" aria-label={`Delete ${savedSpeciality.name}`}>Delete</button>
-						</form>
-					</div>
-				{/each}
-			</div>
-		{:else}
-			<p class="admin-panel__empty">No specialities have been added yet.</p>
-		{/if}
+		<DataTable {table} emptyMessage="No specialities have been added yet.">
+			{#snippet children(row)}
+				{@const savedSpeciality = row.original}
+				<tr class:editing={editingRowId === savedSpeciality.id}>
+					<td>
+						{#if editingRowId === savedSpeciality.id}
+							<select name="domaineId" class="dt-select" required>
+								{#each data.domaines as savedDomaine (savedDomaine.id)}
+									<option
+										value={savedDomaine.id}
+										selected={savedSpeciality.domaineId === savedDomaine.id}
+									>
+										{savedDomaine.name} — {savedDomaine.studyLevel} — {savedDomaine.facultyName}
+									</option>
+								{/each}
+							</select>
+						{:else}
+							{savedSpeciality.domaineName}
+						{/if}
+					</td>
+					<td>
+						{#if editingRowId === savedSpeciality.id}
+							<input
+								type="text"
+								name="name"
+								value={savedSpeciality.name}
+								class="dt-input"
+								required
+							/>
+						{:else}
+							{savedSpeciality.name}
+						{/if}
+					</td>
+					<td>
+						{#if editingRowId === savedSpeciality.id}
+							<input
+								type="text"
+								name="nameAr"
+								value={savedSpeciality.nameAr}
+								dir="rtl"
+								class="dt-input"
+								required
+							/>
+						{:else}
+							{savedSpeciality.nameAr}
+						{/if}
+					</td>
+					<td>
+						<div class="dt-actions">
+							{#if editingRowId === savedSpeciality.id}
+								<button
+									type="button"
+									class="dt-btn-save"
+									onclick={(e) => handleSave(e, savedSpeciality.id)}
+								>
+									Save
+								</button>
+								<button type="button" class="dt-btn-cancel" onclick={() => (editingRowId = null)}>
+									Cancel
+								</button>
+							{:else}
+								<button
+									type="button"
+									class="dt-btn-edit"
+									onclick={() => (editingRowId = savedSpeciality.id)}
+								>
+									Edit
+								</button>
+								<form method="post" action="?/delete" use:enhance style="display:inline">
+									<input type="hidden" name="id" value={savedSpeciality.id} />
+									<button
+										type="submit"
+										class="dt-btn-delete"
+										aria-label="Delete {savedSpeciality.name}"
+									>
+										Delete
+									</button>
+								</form>
+							{/if}
+						</div>
+					</td>
+				</tr>
+			{/snippet}
+		</DataTable>
 	</section>
 </div>

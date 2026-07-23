@@ -105,16 +105,33 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		db.select().from(domaine).orderBy(asc(domaine.name)),
 		db.select().from(speciality).orderBy(asc(speciality.name)),
 		administrator && currentSession
-			? db
-					.select({
-						id: registrationApplication.id,
-						studentName: user.name,
-						isProcessed: registrationApplication.isProcessed
-					})
-					.from(registrationApplication)
-					.innerJoin(user, eq(registrationApplication.userId, user.id))
-					.where(eq(registrationApplication.sessionId, currentSession.id))
-					.orderBy(asc(user.name))
+			? authenticatedUser.role === 'adminfac' && authenticatedUser.facultyId
+				? db
+						.select({
+							id: registrationApplication.id,
+							studentName: user.name,
+							isProcessed: registrationApplication.isProcessed
+						})
+						.from(registrationApplication)
+						.innerJoin(user, eq(registrationApplication.userId, user.id))
+						.innerJoin(domaine, eq(registrationApplication.domainId, domaine.id))
+						.where(
+							and(
+								eq(registrationApplication.sessionId, currentSession.id),
+								eq(domaine.facultyId, authenticatedUser.facultyId)
+							)
+						)
+						.orderBy(asc(user.name))
+				: db
+						.select({
+							id: registrationApplication.id,
+							studentName: user.name,
+							isProcessed: registrationApplication.isProcessed
+						})
+						.from(registrationApplication)
+						.innerJoin(user, eq(registrationApplication.userId, user.id))
+						.where(eq(registrationApplication.sessionId, currentSession.id))
+						.orderBy(asc(user.name))
 			: Promise.resolve([])
 	]);
 
@@ -330,6 +347,27 @@ export const actions: Actions = {
 		const decision = formData.get('isAccepted')?.toString();
 		if (!id || (decision !== 'true' && decision !== 'false')) {
 			return fail(400, { message: 'Select an acceptance decision.' });
+		}
+
+		if (authenticatedUser.role === 'adminfac' && authenticatedUser.facultyId) {
+			const applicationRecord = await db
+				.select({ domainId: registrationApplication.domainId })
+				.from(registrationApplication)
+				.where(eq(registrationApplication.id, id))
+				.limit(1);
+
+			if (!applicationRecord.length)
+				return fail(404, { message: 'Registration application not found.' });
+
+			const domaineRecord = await db
+				.select({ facultyId: domaine.facultyId })
+				.from(domaine)
+				.where(eq(domaine.id, applicationRecord[0].domainId))
+				.limit(1);
+
+			if (!domaineRecord.length || domaineRecord[0].facultyId !== authenticatedUser.facultyId) {
+				error(403, 'You can only process applications for your own faculty.');
+			}
 		}
 
 		const updated = await db

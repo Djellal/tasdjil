@@ -1,0 +1,178 @@
+.dt-wrapper {
+	overflow-x: auto;
+}
+
+.dt-table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.875rem;
+}
+
+.dt-table th,
+.dt-table td {
+	padding: 0.625rem 0.75rem;
+	text-align: left;
+	white-space: nowrap;
+}
+
+.dt-table thead th {
+	border-bottom: 2px solid #e2e8f0;
+	color: #64748b;
+	font-size: 0.75rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+}
+
+.dt-table tbody tr {
+	border-bottom: 1px solid #f1f5f9;
+	transition: background-color 150ms ease;
+}
+
+.dt-table tbody tr:hover {
+	background: #f8fafc;
+}
+
+.dt-sort-btn {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.375rem;
+	border: 0;
+	background: transparent;
+	padding: 0;
+	color: inherit;
+	cursor: pointer;
+	font: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	text-transform: inherit;
+	letter-spacing: inherit;
+}
+
+.dt-sort-btn:hover {
+	color: #2563eb;
+}
+
+.dt-sort-icon {
+	font-size: 0.625rem;
+}
+
+.dt-empty {
+	margin: 0;
+	padding: 2rem 1rem;
+	color: #64748b;
+	text-align: center;
+}
+
+.dt-pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	margin-top: 1rem;
+	padding-top: 1rem;
+	border-top: 1px solid #f1f5f9;
+}
+
+.dt-pagination__btn {
+	border: 1px solid #e2e8f0;
+	border-radius: 0.375rem;
+	background: white;
+	padding: 0.375rem 0.75rem;
+	color: #475569;
+	cursor: pointer;
+	font: inherit;
+	font-size: 0.8125rem;
+	font-weight: 500;
+	transition:
+		background-color 150ms ease,
+		color 150ms ease;
+}
+
+.dt-pagination__btn:hover:not(:disabled) {
+	background: #eff6ff;
+	color: #1d4ed8;
+}
+
+.dt-pagination__btn:disabled {
+	cursor: not-allowed;
+	opacity: 0.4;
+}
+
+.dt-pagination__info {
+	color: #64748b;
+	font-size: 0.8125rem;
+}
+
+.dt-input,
+.dt-select {
+	box-sizing: border-box;
+	width: 100%;
+	min-width: 6rem;
+	border: 1px solid #cbd5e1;
+	border-radius: 0.375rem;
+	padding: 0.375rem 0.5rem;
+	color: #0f172a;
+	font: inherit;
+	font-size: 0.8125rem;
+}
+
+.dt-input:focus,
+.dt-select:focus {
+	border-color: #2563eb;
+	outline: 2px solid rgb(37 99 235 / 15%);
+}
+
+.dt-actions {
+	display: flex;
+	gap: 0.375rem;
+	white-space: nowrap;
+}
+
+.dt-actions button {
+	border-radius: 0.375rem;
+	padding: 0.25rem 0.625rem;
+	cursor: pointer;
+	font: inherit;
+	font-size: 0.75rem;
+	font-weight: 600;
+	white-space: nowrap;
+}
+
+.dt-actions button:hover {
+	opacity: 0.85;
+}
+
+.dt-btn-edit {
+	border: 1px solid #e2e8f0;
+	background: white;
+	color: #2563eb;
+}
+
+.dt-btn-delete {
+	border: 1px solid #fecaca;
+	background: white;
+	color: #b91c1c;
+}
+
+.dt-btn-delete:hover {
+	background: #fef2f2;
+}
+
+.dt-btn-save {
+	border: 0;
+	background: #2563eb;
+	color: white;
+}
+
+.dt-btn-cancel {
+	border: 1px solid #e2e8f0;
+	background: white;
+	color: #64748b;
+}
+
+@media (max-width: 36rem) {
+	.dt-actions {
+		flex-direction: column;
+	}
+}

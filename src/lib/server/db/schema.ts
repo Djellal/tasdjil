@@ -146,7 +146,8 @@ export const registrationApplication = pgTable(
 );
 
 export const faculteRelations = relations(faculte, ({ many }) => ({
-	domaines: many(domaine)
+	domaines: many(domaine),
+	adminUsers: many(user)
 }));
 
 export const establissementRelations = relations(establissement, ({ many }) => ({
@@ -203,6 +204,13 @@ export const registrationApplicationRelations = relations(registrationApplicatio
 		fields: [registrationApplication.preference3],
 		references: [speciality.id],
 		relationName: 'registrationApplicationPreference3'
+	})
+}));
+
+export const userFacultyRelations = relations(user, ({ one }) => ({
+	faculty: one(faculte, {
+		fields: [user.facultyId],
+		references: [faculte.id]
 	})
 }));
 

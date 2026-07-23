@@ -1,6 +1,6 @@
 import { asc, eq } from 'drizzle-orm';
-import { fail } from '@sveltejs/kit';
-import { requireAdmin } from '$lib/server/auth-guard';
+import { error, fail } from '@sveltejs/kit';
+import { requireAdmin, requireAdminOrAdminFac } from '$lib/server/auth-guard';
 import { db } from '$lib/server/db';
 import { domaine, faculte } from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
@@ -18,11 +18,14 @@ function readId(formData: FormData) {
 }
 
 export const load: PageServerLoad = async ({ locals }) => {
-	requireAdmin(locals);
+	const user = requireAdminOrAdminFac(locals);
 
-	return {
-		faculties: await db.select().from(faculte).orderBy(asc(faculte.name))
-	};
+	const faculties =
+		user.role === 'admin'
+			? await db.select().from(faculte).orderBy(asc(faculte.name))
+			: await db.select().from(faculte).where(eq(faculte.id, user.facultyId!));
+
+	return { faculties, isAdmin: user.role === 'admin' };
 };
 
 export const actions: Actions = {
@@ -38,7 +41,7 @@ export const actions: Actions = {
 		return { success: true, message: 'Faculty created successfully.' };
 	},
 	update: async ({ locals, request }) => {
-		requireAdmin(locals);
+		const user = requireAdminOrAdminFac(locals);
 		const formData = await request.formData();
 		const id = readId(formData);
 		const values = readFaculty(formData);
@@ -46,6 +49,10 @@ export const actions: Actions = {
 		if (!id) return fail(400, { message: 'Invalid faculty.' });
 		if (!values.name || !values.nameAr) {
 			return fail(400, { message: 'Both faculty names are required.' });
+		}
+
+		if (user.role === 'adminfac' && id !== user.facultyId) {
+			error(403, 'You can only edit your own faculty.');
 		}
 
 		const updated = await db
@@ -69,7 +76,7 @@ export const actions: Actions = {
 			.where(eq(domaine.facultyId, id))
 			.limit(1);
 		if (dependentDomaine.length) {
-			return fail(409, { message: 'Delete this faculty’s domaines first.' });
+			return fail(409, { message: "Delete this faculty's domaines first." });
 		}
 
 		const deleted = await db

@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { pgTable, text, timestamp, boolean, index } from 'drizzle-orm/pg-core';
+import { integer, pgTable, text, timestamp, boolean, index } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
 	id: text('id').primaryKey(),
@@ -12,7 +12,8 @@ export const user = pgTable('user', {
 		.defaultNow()
 		.$onUpdate(() => /* @__PURE__ */ new Date())
 		.notNull(),
-	role: text('role', { enum: ['admin', 'adminfac', 'student'] }).default('student')
+	role: text('role', { enum: ['admin', 'adminfac', 'student'] }).default('student'),
+	facultyId: integer('faculty_id')
 });
 
 export const session = pgTable(

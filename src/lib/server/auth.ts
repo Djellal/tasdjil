@@ -18,6 +18,12 @@ export const auth = betterAuth({
 				required: false,
 				defaultValue: 'student',
 				input: false
+			},
+			facultyId: {
+				type: 'number',
+				required: false,
+				defaultValue: null,
+				input: false
 			}
 		}
 	},

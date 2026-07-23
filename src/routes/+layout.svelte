@@ -35,8 +35,8 @@
 
 			<nav class="main-nav" aria-label="Main navigation">
 				<a href={localizedPath('/')}>Home</a>
-				<details class="language-menu">
-					<summary aria-label="Change language">{languageNames[locale]}</summary>
+				<div class="language-menu">
+					<button class="language-menu__toggle" aria-label="Change language">{languageNames[locale]}</button>
 					<div class="language-menu__submenu">
 						{#each locales as language (language)}
 							<a
@@ -49,13 +49,15 @@
 							</a>
 						{/each}
 					</div>
-				</details>
+				</div>
 				{#if data.user}
 					<a href={localizedPath('/registration-application')}>Application</a>
 					{#if data.user.role === 'admin'}
-						<details class="admin-menu">
-							<summary>Admin</summary>
+						<div class="admin-menu">
+							<button class="admin-menu__toggle">Admin</button>
 							<div class="admin-menu__submenu">
+								<a href={localizedPath('/admin/users')}>Users</a>
+								<a href={localizedPath('/admin/registration-applications')}>Applications</a>
 								<a href={localizedPath('/admin/parameters')}>Parameters</a>
 								<a href={localizedPath('/admin/sessions')}>Sessions</a>
 								<a href={localizedPath('/admin/establishments')}>Establishments</a>
@@ -63,7 +65,17 @@
 								<a href={localizedPath('/admin/domaines')}>Domaines</a>
 								<a href={localizedPath('/admin/specialities')}>Specialities</a>
 							</div>
-						</details>
+						</div>
+					{:else if data.user.role === 'adminfac'}
+						<div class="admin-menu">
+							<button class="admin-menu__toggle">Faculty Admin</button>
+							<div class="admin-menu__submenu">
+								<a href={localizedPath('/admin/registration-applications')}>Applications</a>
+								<a href={localizedPath('/admin/faculties')}>My Faculty</a>
+								<a href={localizedPath('/admin/domaines')}>Domaines</a>
+								<a href={localizedPath('/admin/specialities')}>Specialities</a>
+							</div>
+						</div>
 					{/if}
 					<span class="main-nav__user">{data.user.name}</span>
 					<form method="post" action={localizedPath('/logout')}>
