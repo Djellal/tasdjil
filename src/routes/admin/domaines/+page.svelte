@@ -13,6 +13,7 @@
 	import DataTable from '$lib/components/DataTable.svelte';
 	import '$lib/components/data-table.css';
 	import type { ActionData, PageData } from './$types';
+	import { FolderOpen, Plus, Pencil, Check, X, Trash2, CircleCheck, AlertCircle } from '@lucide/svelte';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 	let editingRowId = $state<number | null>(null);
@@ -97,7 +98,7 @@
 <div class="admin-page">
 	<header class="admin-page__header">
 		<div>
-			<h1>Domaines</h1>
+			<h1><FolderOpen size={24} /> Domaines</h1>
 			<p>Manage domaines by faculty and study level.</p>
 		</div>
 	</header>
@@ -109,6 +110,7 @@
 			class="admin-alert"
 			role="status"
 		>
+			{#if form.success}<CircleCheck size={16} />{:else}<AlertCircle size={16} />{/if}
 			{form.message}
 		</p>
 	{/if}
@@ -141,7 +143,7 @@
 					Arabic name
 					<input type="text" name="nameAr" dir="rtl" autocomplete="off" required />
 				</label>
-				<button type="submit">Add domaine</button>
+				<button type="submit"><Plus size={14} /> Add domaine</button>
 			</form>
 		{:else}
 			<p class="admin-panel__empty">Add a faculty before creating a domaine.</p>
@@ -210,10 +212,10 @@
 									class="dt-btn-save"
 									onclick={(e) => handleSave(e, savedDomaine.id)}
 								>
-									Save
+									<Check size={12} /> Save
 								</button>
 								<button type="button" class="dt-btn-cancel" onclick={() => (editingRowId = null)}>
-									Cancel
+									<X size={12} /> Cancel
 								</button>
 							{:else}
 								<button
@@ -221,7 +223,7 @@
 									class="dt-btn-edit"
 									onclick={() => (editingRowId = savedDomaine.id)}
 								>
-									Edit
+									<Pencil size={12} /> Edit
 								</button>
 								<form method="post" action="?/delete" use:enhance style="display:inline">
 									<input type="hidden" name="id" value={savedDomaine.id} />
@@ -230,7 +232,7 @@
 										class="dt-btn-delete"
 										aria-label="Delete {savedDomaine.name}"
 									>
-										Delete
+										<Trash2 size={12} /> Delete
 									</button>
 								</form>
 							{/if}

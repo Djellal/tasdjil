@@ -13,6 +13,7 @@
 	import DataTable from '$lib/components/DataTable.svelte';
 	import '$lib/components/data-table.css';
 	import type { ActionData, PageData } from './$types';
+	import { Calendar, Plus, Pencil, Check, X, Trash2, CircleCheck, AlertCircle } from '@lucide/svelte';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 	let editingRowId = $state<number | null>(null);
@@ -97,7 +98,7 @@
 <div class="admin-page">
 	<header class="admin-page__header">
 		<div>
-			<h1>Sessions</h1>
+			<h1><Calendar size={24} /> Sessions</h1>
 			<p>Create and manage registration periods.</p>
 		</div>
 	</header>
@@ -109,6 +110,7 @@
 			class="admin-alert"
 			role="status"
 		>
+			{#if form.success}<CircleCheck size={16} />{:else}<AlertCircle size={16} />{/if}
 			{form.message}
 		</p>
 	{/if}
@@ -135,7 +137,7 @@
 					<option value="true">Open</option>
 				</select>
 			</label>
-			<button type="submit">Add session</button>
+			<button type="submit"><Plus size={14} /> Add session</button>
 		</form>
 	</section>
 
@@ -203,10 +205,10 @@
 									class="dt-btn-save"
 									onclick={(e) => handleSave(e, session.id)}
 								>
-									Save
+									<Check size={12} /> Save
 								</button>
 								<button type="button" class="dt-btn-cancel" onclick={() => (editingRowId = null)}>
-									Cancel
+									<X size={12} /> Cancel
 								</button>
 							{:else}
 								<button
@@ -214,7 +216,7 @@
 									class="dt-btn-edit"
 									onclick={() => (editingRowId = session.id)}
 								>
-									Edit
+									<Pencil size={12} /> Edit
 								</button>
 								<form method="post" action="?/delete" use:enhance style="display:inline">
 									<input type="hidden" name="id" value={session.id} />
@@ -223,7 +225,7 @@
 										class="dt-btn-delete"
 										aria-label="Delete {session.nameSession}"
 									>
-										Delete
+										<Trash2 size={12} /> Delete
 									</button>
 								</form>
 							{/if}

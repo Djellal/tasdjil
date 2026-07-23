@@ -14,6 +14,7 @@
 	import '$lib/components/data-table.css';
 	import type { PageData } from './$types';
 	import type { ColumnDef } from '@tanstack/table-core';
+	import { ClipboardList, Filter, Eye } from '@lucide/svelte';
 
 	let { data }: { data: PageData } = $props();
 	let searchValue = $state(data.search);
@@ -106,7 +107,7 @@
 <div class="admin-page">
 	<header class="admin-page__header">
 		<div>
-			<h1>Registration Applications</h1>
+			<h1><ClipboardList size={24} /> Registration Applications</h1>
 			<p>View and manage student registration applications.</p>
 		</div>
 	</header>
@@ -151,7 +152,7 @@
 					{/each}
 				</select>
 			</label>
-			<button type="submit">Filter</button>
+			<button type="submit"><Filter size={14} /> Filter</button>
 		</form>
 	</section>
 
@@ -184,12 +185,12 @@
 						</span>
 					</td>
 					<td>
-						<a
-							class="view-link"
-							href="{localizedPath('/registration-application')}?application={app.id}"
-						>
-							View
-						</a>
+					<a
+						class="view-link"
+						href="{localizedPath('/registration-application')}?application={app.id}"
+					>
+						<Eye size={14} /> View
+					</a>
 					</td>
 				</tr>
 			{/snippet}

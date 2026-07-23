@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { baseLocale, extractLocaleFromUrl } from '$lib/paraglide/runtime';
+	import { GraduationCap, Calendar } from '@lucide/svelte';
 
 	let locale = $derived(extractLocaleFromUrl(page.url) ?? baseLocale);
 </script>
 
 {#if locale === 'ar'}
 	<article class="announcement" aria-labelledby="announcement-title">
-		<h1 id="announcement-title">🎓 فتح منصة التسجيل</h1>
+		<h1 id="announcement-title"><GraduationCap size={28} /> فتح منصة التسجيل</h1>
 
 		<p>
 			تعلن جامعة سطيف 1 - فرحات عباس عن فتح المنصة الإلكترونية لاستقبال طلبات الترشح للدراسة في:
@@ -20,7 +21,7 @@
 		</ul>
 
 		<p class="announcement__date">
-			<strong>📅 مدة التسجيل:</strong><br />
+			<strong><Calendar size={16} /> مدة التسجيل:</strong><br />
 			من <strong>01 جويلية 2026</strong> إلى <strong>31 جويلية 2026</strong>
 		</p>
 	</article>

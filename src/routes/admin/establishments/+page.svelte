@@ -13,6 +13,7 @@
 	import DataTable from '$lib/components/DataTable.svelte';
 	import '$lib/components/data-table.css';
 	import type { ActionData, PageData } from './$types';
+	import { Building2, Plus, Pencil, Check, X, Trash2, CircleCheck, AlertCircle } from '@lucide/svelte';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 	let editingRowId = $state<number | null>(null);
@@ -89,7 +90,7 @@
 <div class="admin-page">
 	<header class="admin-page__header">
 		<div>
-			<h1>Establishments</h1>
+			<h1><Building2 size={24} /> Establishments</h1>
 			<p>Create and manage establishment names in French and Arabic.</p>
 		</div>
 	</header>
@@ -101,6 +102,7 @@
 			class="admin-alert"
 			role="status"
 		>
+			{#if form.success}<CircleCheck size={16} />{:else}<AlertCircle size={16} />{/if}
 			{form.message}
 		</p>
 	{/if}
@@ -116,7 +118,7 @@
 				Arabic name
 				<input type="text" name="nameAr" dir="rtl" autocomplete="off" required />
 			</label>
-			<button type="submit">Add establishment</button>
+			<button type="submit"><Plus size={14} /> Add establishment</button>
 		</form>
 	</section>
 
@@ -156,10 +158,10 @@
 									class="dt-btn-save"
 									onclick={(e) => handleSave(e, establishment.id)}
 								>
-									Save
+									<Check size={12} /> Save
 								</button>
 								<button type="button" class="dt-btn-cancel" onclick={() => (editingRowId = null)}>
-									Cancel
+									<X size={12} /> Cancel
 								</button>
 							{:else}
 								<button
@@ -167,7 +169,7 @@
 									class="dt-btn-edit"
 									onclick={() => (editingRowId = establishment.id)}
 								>
-									Edit
+									<Pencil size={12} /> Edit
 								</button>
 								<form method="post" action="?/delete" use:enhance style="display:inline">
 									<input type="hidden" name="id" value={establishment.id} />
@@ -176,7 +178,7 @@
 										class="dt-btn-delete"
 										aria-label="Delete {establishment.name}"
 									>
-										Delete
+										<Trash2 size={12} /> Delete
 									</button>
 								</form>
 							{/if}

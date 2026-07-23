@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import type { ActionData, PageData } from './$types';
+	import { Settings, Check, CircleCheck, AlertCircle } from '@lucide/svelte';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 </script>
@@ -10,7 +11,7 @@
 <div class="admin-page">
 	<header class="admin-page__header">
 		<div>
-			<h1>Global parameters</h1>
+			<h1><Settings size={24} /> Global parameters</h1>
 			<p>Configure application-wide settings.</p>
 		</div>
 	</header>
@@ -22,6 +23,7 @@
 			class="admin-alert"
 			role="status"
 		>
+			{#if form.success}<CircleCheck size={16} />{:else}<AlertCircle size={16} />{/if}
 			{form.message}
 		</p>
 	{/if}
@@ -40,7 +42,7 @@
 					{/each}
 				</select>
 			</label>
-			<button type="submit">Save parameters</button>
+			<button type="submit"><Check size={14} /> Save parameters</button>
 		</form>
 
 		{#if !data.sessions.length}

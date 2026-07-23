@@ -1,6 +1,21 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import type { ActionData, PageData } from './$types';
+	import {
+		CalendarDays,
+		User,
+		BookOpen,
+		Target,
+		ShieldCheck,
+		Upload,
+		Paperclip,
+		Send,
+		CheckCircle,
+		AlertCircle,
+		CircleCheck,
+		Info,
+		Circle
+	} from '@lucide/svelte';
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 	let selectedSystem = $derived(data.application?.educationalSystem ?? 'LMD');
@@ -69,7 +84,7 @@
 				class:session-status--open={data.currentSession.registrationOpened}
 				class="session-status"
 			>
-				{data.currentSession.registrationOpened ? 'Registration open' : 'Registration closed'}
+				<Circle size={10} /> {data.currentSession.registrationOpened ? 'Registration open' : 'Registration closed'}
 			</span>
 		{/if}
 	</header>
@@ -81,26 +96,27 @@
 			class="alert"
 			role="status"
 		>
+			{#if form.success}<CircleCheck size={18} />{:else}<AlertCircle size={18} />{/if}
 			{form.message}
 		</p>
 	{/if}
 
 	{#if !data.currentSession}
 		<p class="alert alert--error">
-			No current registration session is configured. Applications are disabled.
+			<AlertCircle size={18} /> No current registration session is configured. Applications are disabled.
 		</p>
 	{:else if !data.currentSession.registrationOpened}
-		<p class="alert alert--error">The current session is closed. The application is read-only.</p>
+		<p class="alert alert--error"><AlertCircle size={18} /> The current session is closed. The application is read-only.</p>
 	{:else if data.application?.isProcessed && data.isOwnApplication}
 		<p class="alert alert--info">
-			This application has been processed and can no longer be edited.
+			<Info size={18} /> This application has been processed and can no longer be edited.
 		</p>
 	{/if}
 
 	{#if data.isAdministrator && data.applications.length}
 		<section class="application-panel review-panel">
 			<div class="panel-heading">
-				<span class="section-number" aria-hidden="true">A</span>
+				<span class="section-number" aria-hidden="true"><ShieldCheck size={18} /></span>
 				<div>
 					<h2>Applications to review</h2>
 					<p>Select a student application to review its details and decision status.</p>
@@ -127,11 +143,11 @@
 
 	<form method="post" action="?/save" enctype="multipart/form-data">
 		<fieldset disabled={!canEdit}>
-			<section class="application-panel session-panel">
-				<div class="panel-heading">
-					<span class="section-number" aria-hidden="true">01</span>
-					<div>
-						<h2>Registration session</h2>
+		<section class="application-panel session-panel">
+			<div class="panel-heading">
+				<span class="section-number" aria-hidden="true"><CalendarDays size={18} /></span>
+				<div>
+					<h2>Registration session</h2>
 						<p>Your application will be attached to the active admissions period.</p>
 					</div>
 				</div>
@@ -141,11 +157,11 @@
 				</label>
 			</section>
 
-			<section class="application-panel">
-				<div class="panel-heading">
-					<span class="section-number" aria-hidden="true">02</span>
-					<div>
-						<h2>Personal information</h2>
+		<section class="application-panel">
+			<div class="panel-heading">
+				<span class="section-number" aria-hidden="true"><User size={18} /></span>
+				<div>
+					<h2>Personal information</h2>
 						<p>Enter your identity details exactly as they appear on official documents.</p>
 					</div>
 				</div>
@@ -207,11 +223,11 @@
 				</div>
 			</section>
 
-			<section class="application-panel">
-				<div class="panel-heading">
-					<span class="section-number" aria-hidden="true">03</span>
-					<div>
-						<h2>Academic history</h2>
+		<section class="application-panel">
+			<div class="panel-heading">
+				<span class="section-number" aria-hidden="true"><BookOpen size={18} /></span>
+				<div>
+					<h2>Academic history</h2>
 						<p>Tell us about your previous studies, results, and educational system.</p>
 					</div>
 				</div>
@@ -330,11 +346,11 @@
 				</div>
 			</section>
 
-			<section class="application-panel program-panel">
-				<div class="panel-heading">
-					<span class="section-number" aria-hidden="true">04</span>
-					<div>
-						<h2>Requested program</h2>
+		<section class="application-panel program-panel">
+			<div class="panel-heading">
+				<span class="section-number" aria-hidden="true"><Target size={18} /></span>
+				<div>
+					<h2>Requested program</h2>
 						<p>Choose a level and domaine first, then rank your preferred specialities.</p>
 					</div>
 				</div>
@@ -383,7 +399,7 @@
 						</label>
 					{/each}
 					<label class="application-field">
-						Supporting attachment
+						<Paperclip size={14} /> Supporting attachment
 						<input
 							type="file"
 							name="attachment"
@@ -396,7 +412,7 @@
 									id: String(data.application.id)
 								})}
 								target="_blank"
-								rel="noopener noreferrer">View current attachment</a
+								rel="noopener noreferrer"><Paperclip size={14} /> View current attachment</a
 							>{/if}
 					</label>
 				</div>
@@ -409,7 +425,7 @@
 						<span>Review your details before submitting the application.</span>
 					</div>
 					<button class="submit-button" type="submit"
-						>{data.application ? 'Update application' : 'Submit application'}</button
+						><Send size={16} /> {data.application ? 'Update application' : 'Submit application'}</button
 					>
 				</div>
 			{/if}
@@ -419,7 +435,7 @@
 	{#if data.isAdministrator && data.application}
 		<section class="application-panel administration-panel">
 			<div class="panel-heading">
-				<span class="section-number" aria-hidden="true">A</span>
+				<span class="section-number" aria-hidden="true"><ShieldCheck size={18} /></span>
 				<div>
 					<h2>Administration decision</h2>
 					<p>This panel is restricted to admin and faculty-admin roles.</p>
@@ -445,7 +461,7 @@
 				<label class="application-field"
 					>Processed<input value={data.application.isProcessed ? 'Yes' : 'No'} readonly /></label
 				>
-				<button class="submit-button" type="submit">Save decision</button>
+				<button class="submit-button" type="submit"><CheckCircle size={16} /> Save decision</button>
 			</form>
 			<small
 				>Saving either acceptance decision automatically marks the application as processed.</small
@@ -531,9 +547,9 @@
 		position: relative;
 		z-index: 1;
 		display: inline-flex;
-		flex: 0 0 auto;
 		align-items: center;
 		gap: 0.5rem;
+		flex: 0 0 auto;
 		border-radius: 999px;
 		border: 1px solid #fecaca;
 		background: rgb(255 255 255 / 86%);
@@ -543,21 +559,9 @@
 		font-weight: 700;
 		box-shadow: 0 0.25rem 1rem rgb(15 23 42 / 6%);
 	}
-	.session-status::before {
-		width: 0.5rem;
-		height: 0.5rem;
-		border-radius: 50%;
-		background: #ef4444;
-		box-shadow: 0 0 0 0.2rem #fee2e2;
-		content: '';
-	}
 	.session-status--open {
 		border-color: #bbf7d0;
 		color: #166534;
-	}
-	.session-status--open::before {
-		background: #22c55e;
-		box-shadow: 0 0 0 0.2rem #dcfce7;
 	}
 	.alert {
 		display: flex;
@@ -571,42 +575,20 @@
 		font-weight: 600;
 		box-shadow: 0 0.25rem 1rem rgb(15 23 42 / 4%);
 	}
-	.alert::before {
-		display: grid;
-		width: 1.5rem;
-		height: 1.5rem;
-		flex: 0 0 auto;
-		place-items: center;
-		border-radius: 50%;
-		font-size: 0.75rem;
-		font-weight: 800;
-		content: '!';
-	}
 	.alert--error {
 		border-color: #fecaca;
 		background: #fef2f2;
 		color: #b91c1c;
-	}
-	.alert--error::before {
-		background: #fee2e2;
 	}
 	.alert--success {
 		border-color: #bbf7d0;
 		background: #f0fdf4;
 		color: #166534;
 	}
-	.alert--success::before {
-		background: #dcfce7;
-		content: '✓';
-	}
 	.alert--info {
 		border-color: #bfdbfe;
 		background: #eff6ff;
 		color: #1d4ed8;
-	}
-	.alert--info::before {
-		background: #dbeafe;
-		content: 'i';
 	}
 	.application-panel {
 		position: relative;
@@ -641,8 +623,6 @@
 		border-radius: 0.7rem;
 		background: #eff6ff;
 		color: #2563eb;
-		font-size: 0.75rem;
-		font-weight: 800;
 		box-shadow: inset 0 0 0 1px #dbeafe;
 	}
 	.session-panel {
@@ -793,9 +773,10 @@
 	}
 	.submit-button {
 		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
 		min-height: 2.8rem;
 		flex: 0 0 auto;
-		align-items: center;
 		justify-content: center;
 		border: 0;
 		border-radius: 0.625rem;

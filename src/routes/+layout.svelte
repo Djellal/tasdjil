@@ -6,6 +6,26 @@
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
 	import type { LayoutData } from './$types';
+	import {
+		GraduationCap,
+		Home,
+		Globe,
+		ChevronDown,
+		FileText,
+		Shield,
+		Users,
+		ClipboardList,
+		Settings,
+		Calendar,
+		Building2,
+		School,
+		FolderOpen,
+		Sparkles,
+		LogIn,
+		UserPlus,
+		LogOut,
+		User
+	} from '@lucide/svelte';
 
 	let { children, data }: { children: import('svelte').Snippet; data: LayoutData } = $props();
 	let locale = $derived(extractLocaleFromUrl(page.url) ?? baseLocale);
@@ -29,14 +49,16 @@
 	<header class="site-header">
 		<div class="site-header__content">
 			<a class="brand" href={localizedPath('/')} aria-label="Tasdjil home">
-				<span class="brand__mark" aria-hidden="true">T</span>
+				<span class="brand__mark" aria-hidden="true"><GraduationCap size={20} /></span>
 				<span>Tasdjil</span>
 			</a>
 
 			<nav class="main-nav" aria-label="Main navigation">
-				<a href={localizedPath('/')}>Home</a>
+				<a href={localizedPath('/')}><Home size={16} /> Home</a>
 				<div class="language-menu">
-					<button class="language-menu__toggle" aria-label="Change language">{languageNames[locale]}</button>
+					<button class="language-menu__toggle" aria-label="Change language">
+						<Globe size={16} /> {languageNames[locale]} <ChevronDown size={14} />
+					</button>
 					<div class="language-menu__submenu">
 						{#each locales as language (language)}
 							<a
@@ -51,39 +73,43 @@
 					</div>
 				</div>
 				{#if data.user}
-					<a href={localizedPath('/registration-application')}>Application</a>
+					<a href={localizedPath('/registration-application')}><FileText size={16} /> Application</a>
 					{#if data.user.role === 'admin'}
 						<div class="admin-menu">
-							<button class="admin-menu__toggle">Admin</button>
+							<button class="admin-menu__toggle">
+								<Shield size={16} /> Admin <ChevronDown size={14} />
+							</button>
 							<div class="admin-menu__submenu">
-								<a href={localizedPath('/admin/users')}>Users</a>
-								<a href={localizedPath('/admin/registration-applications')}>Applications</a>
-								<a href={localizedPath('/admin/parameters')}>Parameters</a>
-								<a href={localizedPath('/admin/sessions')}>Sessions</a>
-								<a href={localizedPath('/admin/establishments')}>Establishments</a>
-								<a href={localizedPath('/admin/faculties')}>Faculties</a>
-								<a href={localizedPath('/admin/domaines')}>Domaines</a>
-								<a href={localizedPath('/admin/specialities')}>Specialities</a>
+								<a href={localizedPath('/admin/users')}><Users size={16} /> Users</a>
+								<a href={localizedPath('/admin/registration-applications')}><ClipboardList size={16} /> Applications</a>
+								<a href={localizedPath('/admin/parameters')}><Settings size={16} /> Parameters</a>
+								<a href={localizedPath('/admin/sessions')}><Calendar size={16} /> Sessions</a>
+								<a href={localizedPath('/admin/establishments')}><Building2 size={16} /> Establishments</a>
+								<a href={localizedPath('/admin/faculties')}><School size={16} /> Faculties</a>
+								<a href={localizedPath('/admin/domaines')}><FolderOpen size={16} /> Domaines</a>
+								<a href={localizedPath('/admin/specialities')}><Sparkles size={16} /> Specialities</a>
 							</div>
 						</div>
 					{:else if data.user.role === 'adminfac'}
 						<div class="admin-menu">
-							<button class="admin-menu__toggle">Faculty Admin</button>
+							<button class="admin-menu__toggle">
+								<Shield size={16} /> Faculty Admin <ChevronDown size={14} />
+							</button>
 							<div class="admin-menu__submenu">
-								<a href={localizedPath('/admin/registration-applications')}>Applications</a>
-								<a href={localizedPath('/admin/faculties')}>My Faculty</a>
-								<a href={localizedPath('/admin/domaines')}>Domaines</a>
-								<a href={localizedPath('/admin/specialities')}>Specialities</a>
+								<a href={localizedPath('/admin/registration-applications')}><ClipboardList size={16} /> Applications</a>
+								<a href={localizedPath('/admin/faculties')}><School size={16} /> My Faculty</a>
+								<a href={localizedPath('/admin/domaines')}><FolderOpen size={16} /> Domaines</a>
+								<a href={localizedPath('/admin/specialities')}><Sparkles size={16} /> Specialities</a>
 							</div>
 						</div>
 					{/if}
-					<span class="main-nav__user">{data.user.name}</span>
+					<span class="main-nav__user"><User size={16} /> {data.user.name}</span>
 					<form method="post" action={localizedPath('/logout')}>
-						<button type="submit">Sign out</button>
+						<button type="submit"><LogOut size={16} /> Sign out</button>
 					</form>
 				{:else}
-					<a href={localizedPath('/login')}>Sign in</a>
-					<a class="main-nav__primary" href={localizedPath('/register')}>Create account</a>
+					<a href={localizedPath('/login')}><LogIn size={16} /> Sign in</a>
+					<a class="main-nav__primary" href={localizedPath('/register')}><UserPlus size={16} /> Create account</a>
 				{/if}
 			</nav>
 		</div>

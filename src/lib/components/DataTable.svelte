@@ -2,6 +2,7 @@
 	/* eslint-disable @typescript-eslint/no-explicit-any */
 	import { FlexRender } from '@tanstack/svelte-table';
 	import type { Snippet } from 'svelte';
+	import { ArrowUp, ArrowDown, ChevronLeft, ChevronRight } from '@lucide/svelte';
 
 	let {
 		table,
@@ -33,11 +34,11 @@
 										content={header.column.columnDef.header}
 										context={header.getContext()}
 									/>
-									{#if header.column.getIsSorted() === 'asc'}
-										<span class="dt-sort-icon">▲</span>
-									{:else if header.column.getIsSorted() === 'desc'}
-										<span class="dt-sort-icon">▼</span>
-									{/if}
+								{#if header.column.getIsSorted() === 'asc'}
+									<span class="dt-sort-icon"><ArrowUp size={14} /></span>
+								{:else if header.column.getIsSorted() === 'desc'}
+									<span class="dt-sort-icon"><ArrowDown size={14} /></span>
+								{/if}
 								</button>
 							{:else}
 								<FlexRender
@@ -69,7 +70,7 @@
 				disabled={!table.getCanPreviousPage()}
 				onclick={() => table.previousPage()}
 			>
-				← Previous
+				<ChevronLeft size={14} /> Previous
 			</button>
 			<span class="dt-pagination__info">
 				Page {table.state.pagination.pageIndex + 1} of {table.getPageCount()}
@@ -80,7 +81,7 @@
 				disabled={!table.getCanNextPage()}
 				onclick={() => table.nextPage()}
 			>
-				Next →
+				Next <ChevronRight size={14} />
 			</button>
 		</div>
 	{/if}
