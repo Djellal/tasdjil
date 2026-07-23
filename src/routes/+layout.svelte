@@ -2,6 +2,7 @@
 	import type { Pathname } from '$app/types';
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
+	import * as m from '$lib/paraglide/messages.js';
 	import { baseLocale, extractLocaleFromUrl, locales, localizeHref } from '$lib/paraglide/runtime';
 	import './layout.css';
 	import favicon from '$lib/assets/favicon.svg';
@@ -48,24 +49,27 @@
 <div class="site-shell" lang={locale} dir={direction}>
 	<header class="site-header">
 		<div class="site-header__content">
-			<a class="brand" href={localizedPath('/')} aria-label="Tasdjil home">
+			<a class="brand" href={localizedPath('/')} aria-label={m.layout_home_aria()}>
 				<span class="brand__mark" aria-hidden="true"><GraduationCap size={20} /></span>
 				<span>Tasdjil</span>
 			</a>
 
-			<nav class="main-nav" aria-label="Main navigation">
-				<a href={localizedPath('/')}><Home size={16} /> Home</a>
+			<nav class="main-nav" aria-label={m.layout_main_navigation()}>
+				<a href={localizedPath('/')}><Home size={16} /> {m.layout_home()}</a>
 				{#if data.user}
 					<div class="nav-menu applications-menu">
 						<button class="nav-menu__toggle" aria-haspopup="true">
-							<ClipboardList size={16} /> Applications <ChevronDown size={14} />
+							<ClipboardList size={16} />
+							{m.layout_applications()}
+							<ChevronDown size={14} />
 						</button>
 						<div class="nav-menu__submenu">
-							<span class="nav-menu__label">Registration</span>
+							<span class="nav-menu__label">{m.layout_registration()}</span>
 							<a href={localizedPath('/registration-application')}>
 								<FileText size={16} />
 								<span
-									><strong>My application</strong><small>Complete or review your application</small
+									><strong>{m.layout_my_application()}</strong><small
+										>{m.layout_my_application_description()}</small
 									></span
 								>
 							</a>
@@ -73,8 +77,8 @@
 								<a href={localizedPath('/admin/registration-applications')}>
 									<ClipboardList size={16} />
 									<span
-										><strong>Registration applications</strong><small
-											>Review submitted applications</small
+										><strong>{m.layout_registration_applications()}</strong><small
+											>{m.layout_registration_applications_description()}</small
 										></span
 									>
 								</a>
@@ -84,34 +88,50 @@
 					{#if data.user.role === 'admin'}
 						<div class="nav-menu admin-menu">
 							<button class="nav-menu__toggle" aria-haspopup="true">
-								<Shield size={16} /> Admin <ChevronDown size={14} />
+								<Shield size={16} />
+								{m.layout_admin()}
+								<ChevronDown size={14} />
 							</button>
 							<div class="nav-menu__submenu admin-menu__submenu">
-								<span class="nav-menu__label">Administration</span>
-								<a href={localizedPath('/admin/users')}><Users size={16} /> Users</a>
-								<a href={localizedPath('/admin/parameters')}><Settings size={16} /> Parameters</a>
-								<a href={localizedPath('/admin/sessions')}><Calendar size={16} /> Sessions</a>
-								<a href={localizedPath('/admin/establishments')}
-									><Building2 size={16} /> Establishments</a
+								<span class="nav-menu__label">{m.layout_administration()}</span>
+								<a href={localizedPath('/admin/users')}><Users size={16} /> {m.layout_users()}</a>
+								<a href={localizedPath('/admin/parameters')}
+									><Settings size={16} /> {m.layout_parameters()}</a
 								>
-								<a href={localizedPath('/admin/faculties')}><School size={16} /> Faculties</a>
-								<a href={localizedPath('/admin/domaines')}><FolderOpen size={16} /> Domaines</a>
+								<a href={localizedPath('/admin/sessions')}
+									><Calendar size={16} /> {m.layout_sessions()}</a
+								>
+								<a href={localizedPath('/admin/establishments')}
+									><Building2 size={16} /> {m.layout_establishments()}</a
+								>
+								<a href={localizedPath('/admin/faculties')}
+									><School size={16} /> {m.layout_faculties()}</a
+								>
+								<a href={localizedPath('/admin/domaines')}
+									><FolderOpen size={16} /> {m.layout_domains()}</a
+								>
 								<a href={localizedPath('/admin/specialities')}
-									><Sparkles size={16} /> Specialities</a
+									><Sparkles size={16} /> {m.layout_specialities()}</a
 								>
 							</div>
 						</div>
 					{:else if data.user.role === 'adminfac'}
 						<div class="nav-menu admin-menu">
 							<button class="nav-menu__toggle" aria-haspopup="true">
-								<Shield size={16} /> Faculty Admin <ChevronDown size={14} />
+								<Shield size={16} />
+								{m.layout_faculty_admin()}
+								<ChevronDown size={14} />
 							</button>
 							<div class="nav-menu__submenu admin-menu__submenu">
-								<span class="nav-menu__label">Faculty administration</span>
-								<a href={localizedPath('/admin/faculties')}><School size={16} /> My Faculty</a>
-								<a href={localizedPath('/admin/domaines')}><FolderOpen size={16} /> Domaines</a>
+								<span class="nav-menu__label">{m.layout_faculty_administration()}</span>
+								<a href={localizedPath('/admin/faculties')}
+									><School size={16} /> {m.layout_my_faculty()}</a
+								>
+								<a href={localizedPath('/admin/domaines')}
+									><FolderOpen size={16} /> {m.layout_domains()}</a
+								>
 								<a href={localizedPath('/admin/specialities')}
-									><Sparkles size={16} /> Specialities</a
+									><Sparkles size={16} /> {m.layout_specialities()}</a
 								>
 							</div>
 						</div>
@@ -123,29 +143,29 @@
 							<ChevronDown size={14} />
 						</button>
 						<div class="nav-menu__submenu account-menu__submenu">
-							<span class="nav-menu__label">Account</span>
+							<span class="nav-menu__label">{m.layout_account()}</span>
 							<form method="post" action={localizedPath('/logout')}>
-								<button type="submit"><LogOut size={16} /> Sign out</button>
+								<button type="submit"><LogOut size={16} /> {m.layout_sign_out()}</button>
 							</form>
 						</div>
 					</div>
 				{:else}
-					<a href={localizedPath('/login')}><LogIn size={16} /> Sign in</a>
+					<a href={localizedPath('/login')}><LogIn size={16} /> {m.layout_sign_in()}</a>
 					<a class="main-nav__primary" href={localizedPath('/register')}
-						><UserPlus size={16} /> Create account</a
+						><UserPlus size={16} /> {m.layout_create_account()}</a
 					>
 				{/if}
 				<div class="nav-menu language-menu">
 					<button
 						class="nav-menu__toggle language-menu__toggle"
-						aria-label="Change language"
+						aria-label={m.layout_change_language()}
 						aria-haspopup="true"
 					>
 						<Globe size={16} /> <span class="language-menu__name">{languageNames[locale]}</span>
 						<ChevronDown size={14} />
 					</button>
 					<div class="nav-menu__submenu language-menu__submenu">
-						<span class="nav-menu__label">Language</span>
+						<span class="nav-menu__label">{m.layout_language()}</span>
 						{#each locales as language (language)}
 							<a
 								href={resolve(localizeHref(page.url.pathname, { locale: language }) as Pathname)}
@@ -169,7 +189,7 @@
 	<footer class="site-footer">
 		<div class="site-footer__content">
 			<p>&copy; {new Date().getFullYear()} Tasdjil</p>
-			<p>Simple, secure registration.</p>
+			<p>{m.layout_footer_tagline()}</p>
 		</div>
 	</footer>
 </div>
