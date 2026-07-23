@@ -1,14 +1,16 @@
 import { and, asc, desc, eq, ilike, or } from 'drizzle-orm';
+import { error, fail } from '@sveltejs/kit';
 import { requireAdminOrAdminFac } from '$lib/server/auth-guard';
 import { db } from '$lib/server/db';
 import {
 	domaine,
+	establissement,
 	registrationApplication,
 	registrationSession,
 	speciality,
 	user
 } from '$lib/server/db/schema';
-import type { PageServerLoad } from './$types';
+import type { Actions, PageServerLoad } from './$types';
 
 const statusValues = ['pending', 'processed', 'accepted', 'rejected'] as const;
 type StatusValue = (typeof statusValues)[number];
@@ -36,6 +38,9 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const pref3 = db
 		.$with('pref3')
 		.as(db.select({ id: speciality.id, name: speciality.name }).from(speciality));
+	const est = db
+		.$with('est')
+		.as(db.select({ id: establissement.id, name: establissement.name }).from(establissement));
 
 	const conditions = [];
 
@@ -75,7 +80,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 	const whereClause = conditions.length ? and(...conditions) : undefined;
 
 	const applications = await db
-		.with(pref1, pref2, pref3)
+		.with(pref1, pref2, pref3, est)
 		.select({
 			id: registrationApplication.id,
 			studentName: user.name,
@@ -90,7 +95,31 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 			preference3Name: pref3.name,
 			isAccepted: registrationApplication.isAccepted,
 			isProcessed: registrationApplication.isProcessed,
-			remark: registrationApplication.remark
+			remark: registrationApplication.remark,
+			lastName: registrationApplication.lastName,
+			firstName: registrationApplication.firstName,
+			lastNameAr: registrationApplication.lastNameAr,
+			firstNameAr: registrationApplication.firstNameAr,
+			dateOfBirth: registrationApplication.dateOfBirth,
+			placeOfBirth: registrationApplication.placeOfBirth,
+			phoneNumber: registrationApplication.phoneNumber,
+			establishmentName: est.name,
+			fieldOfStudy: registrationApplication.fieldOfStudy,
+			specialization: registrationApplication.specialization,
+			graduationYear: registrationApplication.graduationYear,
+			baccalaureateYear: registrationApplication.baccalaureateYear,
+			baccalaureateNumber: registrationApplication.baccalaureateNumber,
+			educationalSystem: registrationApplication.educationalSystem,
+			generalAverageYear1: registrationApplication.generalAverageYear1,
+			generalAverageYear2: registrationApplication.generalAverageYear2,
+			generalAverageYear3: registrationApplication.generalAverageYear3,
+			generalAverageYear4: registrationApplication.generalAverageYear4,
+			generalAverageYear5: registrationApplication.generalAverageYear5,
+			generalAverageYear6: registrationApplication.generalAverageYear6,
+			admissionsAfterMakeupExamsCount: registrationApplication.admissionsAfterMakeupExamsCount,
+			admissionsWithDebtsCount: registrationApplication.admissionsWithDebtsCount,
+			repeatedYearsCount: registrationApplication.repeatedYearsCount,
+			attachment: registrationApplication.attachment
 		})
 		.from(registrationApplication)
 		.innerJoin(user, eq(registrationApplication.userId, user.id))
@@ -99,6 +128,7 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		.innerJoin(pref1, eq(registrationApplication.preference1, pref1.id))
 		.innerJoin(pref2, eq(registrationApplication.preference2, pref2.id))
 		.innerJoin(pref3, eq(registrationApplication.preference3, pref3.id))
+		.innerJoin(est, eq(registrationApplication.establishmentId, est.id))
 		.where(whereClause)
 		.orderBy(desc(registrationApplication.id));
 
@@ -126,6 +156,61 @@ export const load: PageServerLoad = async ({ locals, url }) => {
 		search,
 		session,
 		status,
-		domain
+		domain,
+		isAdministrator: isAdmin
 	};
+};
+
+export const actions: Actions = {
+	process: async ({ locals, request }) => {
+		const currentUser = requireAdminOrAdminFac(locals);
+		const isAdmin = currentUser.role === 'admin';
+		const facultyId = currentUser.facultyId;
+
+		const formData = await request.formData();
+		const id = Number(formData.get('id'));
+		const decision = formData.get('isAccepted')?.toString();
+
+		if (!Number.isSafeInteger(id) || id <= 0 || (decision !== 'true' && decision !== 'false')) {
+			return fail(400, { processMessage: 'Select an acceptance decision.', processSuccess: false });
+		}
+
+		if (!isAdmin && facultyId) {
+			const applicationRecord = await db
+				.select({ domainId: registrationApplication.domainId })
+				.from(registrationApplication)
+				.where(eq(registrationApplication.id, id))
+				.limit(1);
+
+			if (!applicationRecord.length) {
+				return fail(404, { processMessage: 'Registration application not found.', processSuccess: false });
+			}
+
+			const domaineRecord = await db
+				.select({ facultyId: domaine.facultyId })
+				.from(domaine)
+				.where(eq(domaine.id, applicationRecord[0].domainId))
+				.limit(1);
+
+			if (!domaineRecord.length || domaineRecord[0].facultyId !== facultyId) {
+				error(403, 'You can only process applications for your own faculty.');
+			}
+		}
+
+		const updated = await db
+			.update(registrationApplication)
+			.set({
+				isAccepted: decision === 'true',
+				remark: formData.get('remark')?.toString().trim() || null,
+				isProcessed: true
+			})
+			.where(eq(registrationApplication.id, id))
+			.returning({ id: registrationApplication.id });
+
+		if (!updated.length) {
+			return fail(404, { processMessage: 'Registration application not found.', processSuccess: false });
+		}
+
+		return { processMessage: 'Decision saved successfully.', processSuccess: true };
+	}
 };
