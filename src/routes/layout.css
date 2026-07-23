@@ -3,6 +3,13 @@
 @plugin '@tailwindcss/typography';
 
 :root {
+	--ufas-green: #0e4834;
+	--ufas-green-hover: #0a6e4f;
+	--ufas-green-soft: #eaf3ee;
+	--ufas-green-muted: #d4ebdf;
+	--ufas-gold: #b9975b;
+	--ufas-ink: #252525;
+	--ufas-surface: #fafaf8;
 	font-family:
 		Inter,
 		ui-sans-serif,
@@ -11,8 +18,8 @@
 		BlinkMacSystemFont,
 		'Segoe UI',
 		sans-serif;
-	color: #172033;
-	background: #f8fafc;
+	color: var(--ufas-ink);
+	background: var(--ufas-surface);
 	font-synthesis: none;
 }
 
@@ -34,7 +41,8 @@ a {
 	position: sticky;
 	top: 0;
 	z-index: 50;
-	border-bottom: 1px solid #e2e8f0;
+	border-top: 4px solid var(--ufas-green);
+	border-bottom: 1px solid var(--ufas-gold);
 	background: rgb(255 255 255 / 90%);
 	backdrop-filter: blur(10px);
 }
@@ -56,7 +64,7 @@ a {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.625rem;
-	color: #0f172a;
+	color: var(--ufas-green);
 	font-size: 1.125rem;
 	font-weight: 700;
 	text-decoration: none;
@@ -68,7 +76,7 @@ a {
 	height: 2rem;
 	place-items: center;
 	border-radius: 0.625rem;
-	background: #2563eb;
+	background: var(--ufas-green);
 	color: white;
 	font-size: 0.875rem;
 }
@@ -101,14 +109,14 @@ a {
 
 .main-nav a:hover,
 .main-nav button:hover {
-	background: #eff6ff;
-	color: #1d4ed8;
+	background: var(--ufas-green-soft);
+	color: var(--ufas-green);
 }
 
 .brand:focus-visible,
 .main-nav a:focus-visible,
 .main-nav button:focus-visible {
-	outline: 2px solid #2563eb;
+	outline: 2px solid var(--ufas-gold);
 	outline-offset: 2px;
 }
 
@@ -116,23 +124,20 @@ a {
 	margin: 0;
 }
 
-.admin-menu,
-.language-menu {
+.nav-menu {
 	position: relative;
 }
 
-.language-menu__submenu,
-.admin-menu__submenu {
+.nav-menu__submenu {
 	display: none;
 }
 
-.language-menu:hover .language-menu__submenu,
-.admin-menu:hover .admin-menu__submenu {
+.nav-menu:hover > .nav-menu__submenu,
+.nav-menu:focus-within > .nav-menu__submenu {
 	display: block;
 }
 
-.admin-menu__toggle,
-.language-menu__toggle {
+.nav-menu__toggle {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.375rem;
@@ -147,53 +152,94 @@ a {
 	font-family: inherit;
 }
 
-.admin-menu__toggle:hover,
-.language-menu__toggle:hover,
-.admin-menu:hover > .admin-menu__toggle,
-.language-menu:hover > .language-menu__toggle {
-	background: #eff6ff;
-	color: #1d4ed8;
+.nav-menu__toggle:hover,
+.nav-menu:hover > .nav-menu__toggle,
+.nav-menu:focus-within > .nav-menu__toggle {
+	background: var(--ufas-green-soft);
+	color: var(--ufas-green);
 }
 
-.admin-menu__toggle:focus-visible,
-.language-menu__toggle:focus-visible {
-	outline: 2px solid #2563eb;
+.nav-menu__toggle:focus-visible {
+	outline: 2px solid var(--ufas-gold);
 	outline-offset: 2px;
 }
 
-.admin-menu__submenu,
-.language-menu__submenu {
+.nav-menu__submenu {
 	position: absolute;
 	z-index: 10;
 	top: calc(100% + 0.5rem);
-	right: 0;
-	min-width: 10rem;
+	inset-inline-end: 0;
+	min-width: 12rem;
 	border: 1px solid #e2e8f0;
-	border-radius: 0.625rem;
+	border-radius: 0.75rem;
 	background: white;
-	padding: 0.375rem;
+	padding: 0.5rem;
 	box-shadow: 0 0.75rem 2rem rgb(15 23 42 / 12%);
 }
 
-.admin-menu__submenu a,
-.language-menu__submenu a {
+.nav-menu__submenu::before {
+	position: absolute;
+	top: -0.55rem;
+	right: 0;
+	left: 0;
+	height: 0.55rem;
+	content: '';
+}
+
+.nav-menu__submenu a,
+.nav-menu__submenu button {
 	display: inline-flex;
+	width: 100%;
+	box-sizing: border-box;
 	align-items: center;
 	gap: 0.5rem;
 }
 
+.nav-menu__submenu svg {
+	flex: none;
+}
+
+.nav-menu__label {
+	display: block;
+	padding: 0.375rem 0.75rem 0.25rem;
+	color: #94a3b8;
+	font-size: 0.6875rem;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.applications-menu .nav-menu__submenu {
+	min-width: 18rem;
+}
+
+.applications-menu a span {
+	display: grid;
+	gap: 0.125rem;
+}
+
+.applications-menu a strong {
+	color: #334155;
+	font-size: 0.875rem;
+}
+
+.applications-menu a small {
+	color: #94a3b8;
+	font-size: 0.75rem;
+}
+
 .language-menu__submenu a[aria-current='page'] {
-	background: #eff6ff;
-	color: #1d4ed8;
+	background: var(--ufas-green-soft);
+	color: var(--ufas-green);
 }
 
 .main-nav .main-nav__primary {
-	background: #2563eb;
+	background: var(--ufas-green);
 	color: white;
 }
 
 .main-nav .main-nav__primary:hover {
-	background: #1d4ed8;
+	background: var(--ufas-green-hover);
 	color: white;
 }
 
@@ -206,6 +252,24 @@ a {
 	white-space: nowrap;
 }
 
+.account-menu__toggle {
+	padding: 0.375rem 0.5rem;
+}
+
+.account-menu__avatar {
+	display: grid;
+	width: 1.75rem;
+	height: 1.75rem;
+	place-items: center;
+	border-radius: 999px;
+	background: var(--ufas-green-muted);
+	color: var(--ufas-green);
+}
+
+.account-menu__submenu {
+	min-width: 11rem;
+}
+
 .site-main {
 	width: min(100% - 2rem, 72rem);
 	margin-inline: auto;
@@ -214,14 +278,14 @@ a {
 }
 
 .site-footer {
-	border-top: 1px solid #e2e8f0;
-	background: white;
+	border-top: 4px solid var(--ufas-gold);
+	background: var(--ufas-green);
 }
 
 .site-footer__content {
 	min-height: 5rem;
 	gap: 1rem;
-	color: #64748b;
+	color: var(--ufas-green-soft);
 	font-size: 0.875rem;
 }
 
@@ -241,7 +305,7 @@ a {
 
 .auth-card h1 {
 	margin: 0;
-	color: #0f172a;
+	color: var(--ufas-green);
 	font-size: 1.75rem;
 	line-height: 1.2;
 }
@@ -281,8 +345,8 @@ a {
 }
 
 .auth-field input:focus {
-	border-color: #2563eb;
-	outline: 3px solid rgb(37 99 235 / 15%);
+	border-color: var(--ufas-green);
+	outline: 3px solid rgb(14 72 52 / 15%);
 }
 
 .auth-form__hint {
@@ -313,7 +377,7 @@ a {
 	gap: 0.5rem;
 	border: 0;
 	border-radius: 0.625rem;
-	background: #2563eb;
+	background: var(--ufas-green);
 	padding: 0.75rem 1rem;
 	color: white;
 	cursor: pointer;
@@ -322,11 +386,11 @@ a {
 }
 
 .auth-form button:hover {
-	background: #1d4ed8;
+	background: var(--ufas-green-hover);
 }
 
 .auth-form button:focus-visible {
-	outline: 2px solid #2563eb;
+	outline: 2px solid var(--ufas-gold);
 	outline-offset: 2px;
 }
 
@@ -336,7 +400,7 @@ a {
 }
 
 .auth-card__footer a {
-	color: #1d4ed8;
+	color: var(--ufas-green-hover);
 	font-weight: 600;
 }
 
@@ -355,7 +419,7 @@ a {
 .admin-page__header h1,
 .admin-panel h2 {
 	margin: 0;
-	color: #0f172a;
+	color: var(--ufas-green);
 }
 
 .admin-page__header h1 {
@@ -405,8 +469,8 @@ a {
 }
 
 .faculty-form__field input:focus {
-	border-color: #2563eb;
-	outline: 3px solid rgb(37 99 235 / 15%);
+	border-color: var(--ufas-green);
+	outline: 3px solid rgb(14 72 52 / 15%);
 }
 
 .faculty-form button {
@@ -415,7 +479,7 @@ a {
 	gap: 0.375rem;
 	border: 0;
 	border-radius: 0.5rem;
-	background: #2563eb;
+	background: var(--ufas-green);
 	padding: 0.6875rem 1rem;
 	color: white;
 	cursor: pointer;
@@ -425,7 +489,7 @@ a {
 }
 
 .faculty-form button:hover {
-	background: #1d4ed8;
+	background: var(--ufas-green-hover);
 }
 
 .entity-form {
@@ -484,8 +548,8 @@ a {
 
 .entity-form__field input:focus,
 .entity-form__field select:focus {
-	border-color: #2563eb;
-	outline: 3px solid rgb(37 99 235 / 15%);
+	border-color: var(--ufas-green);
+	outline: 3px solid rgb(14 72 52 / 15%);
 }
 
 .entity-form > button {
@@ -494,7 +558,7 @@ a {
 	gap: 0.375rem;
 	border: 0;
 	border-radius: 0.5rem;
-	background: #2563eb;
+	background: var(--ufas-green);
 	padding: 0.6875rem 1rem;
 	color: white;
 	cursor: pointer;
@@ -505,7 +569,7 @@ a {
 }
 
 .entity-form > button:hover {
-	background: #1d4ed8;
+	background: var(--ufas-green-hover);
 }
 
 .admin-alert {
@@ -588,7 +652,7 @@ a {
 	border: 1px solid #e2e8f0;
 	border-radius: 0.375rem;
 	padding: 0.25rem 0.625rem;
-	color: #2563eb;
+	color: var(--ufas-green-hover);
 	font-size: 0.8125rem;
 	font-weight: 500;
 	text-decoration: none;
@@ -598,11 +662,26 @@ a {
 }
 
 .view-link:hover {
-	background: #eff6ff;
-	color: #1d4ed8;
+	background: var(--ufas-green-soft);
+	color: var(--ufas-green);
 }
 
 @media (max-width: 60rem) {
+	.site-header__content {
+		gap: 0.75rem;
+		padding-block: 0.625rem;
+	}
+
+	.main-nav {
+		flex-wrap: wrap;
+		justify-content: flex-end;
+	}
+
+	.language-menu__name,
+	.main-nav__user {
+		display: none;
+	}
+
 	.entity-form--domaine,
 	.entity-form--speciality,
 	.entity-form--session,
@@ -618,13 +697,27 @@ a {
 }
 
 @media (max-width: 36rem) {
-	.main-nav__user {
-		display: none;
+	.site-header__content {
+		align-items: flex-start;
 	}
 
-	.admin-menu__submenu {
-		right: auto;
-		left: 0;
+	.brand {
+		padding-block: 0.25rem;
+	}
+
+	.main-nav {
+		gap: 0;
+	}
+
+	.nav-menu__submenu {
+		inset-inline-end: 0;
+	}
+
+	.applications-menu .nav-menu__submenu {
+		position: fixed;
+		top: 4.25rem;
+		inset-inline: 1rem;
+		min-width: 0;
 	}
 
 	.site-main {

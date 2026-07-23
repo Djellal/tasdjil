@@ -55,11 +55,97 @@
 
 			<nav class="main-nav" aria-label="Main navigation">
 				<a href={localizedPath('/')}><Home size={16} /> Home</a>
-				<div class="language-menu">
-					<button class="language-menu__toggle" aria-label="Change language">
-						<Globe size={16} /> {languageNames[locale]} <ChevronDown size={14} />
+				{#if data.user}
+					<div class="nav-menu applications-menu">
+						<button class="nav-menu__toggle" aria-haspopup="true">
+							<ClipboardList size={16} /> Applications <ChevronDown size={14} />
+						</button>
+						<div class="nav-menu__submenu">
+							<span class="nav-menu__label">Registration</span>
+							<a href={localizedPath('/registration-application')}>
+								<FileText size={16} />
+								<span
+									><strong>My application</strong><small>Complete or review your application</small
+									></span
+								>
+							</a>
+							{#if data.user.role === 'admin' || data.user.role === 'adminfac'}
+								<a href={localizedPath('/admin/registration-applications')}>
+									<ClipboardList size={16} />
+									<span
+										><strong>Registration applications</strong><small
+											>Review submitted applications</small
+										></span
+									>
+								</a>
+							{/if}
+						</div>
+					</div>
+					{#if data.user.role === 'admin'}
+						<div class="nav-menu admin-menu">
+							<button class="nav-menu__toggle" aria-haspopup="true">
+								<Shield size={16} /> Admin <ChevronDown size={14} />
+							</button>
+							<div class="nav-menu__submenu admin-menu__submenu">
+								<span class="nav-menu__label">Administration</span>
+								<a href={localizedPath('/admin/users')}><Users size={16} /> Users</a>
+								<a href={localizedPath('/admin/parameters')}><Settings size={16} /> Parameters</a>
+								<a href={localizedPath('/admin/sessions')}><Calendar size={16} /> Sessions</a>
+								<a href={localizedPath('/admin/establishments')}
+									><Building2 size={16} /> Establishments</a
+								>
+								<a href={localizedPath('/admin/faculties')}><School size={16} /> Faculties</a>
+								<a href={localizedPath('/admin/domaines')}><FolderOpen size={16} /> Domaines</a>
+								<a href={localizedPath('/admin/specialities')}
+									><Sparkles size={16} /> Specialities</a
+								>
+							</div>
+						</div>
+					{:else if data.user.role === 'adminfac'}
+						<div class="nav-menu admin-menu">
+							<button class="nav-menu__toggle" aria-haspopup="true">
+								<Shield size={16} /> Faculty Admin <ChevronDown size={14} />
+							</button>
+							<div class="nav-menu__submenu admin-menu__submenu">
+								<span class="nav-menu__label">Faculty administration</span>
+								<a href={localizedPath('/admin/faculties')}><School size={16} /> My Faculty</a>
+								<a href={localizedPath('/admin/domaines')}><FolderOpen size={16} /> Domaines</a>
+								<a href={localizedPath('/admin/specialities')}
+									><Sparkles size={16} /> Specialities</a
+								>
+							</div>
+						</div>
+					{/if}
+					<div class="nav-menu account-menu">
+						<button class="nav-menu__toggle account-menu__toggle" aria-haspopup="true">
+							<span class="account-menu__avatar"><User size={15} /></span>
+							<span class="main-nav__user">{data.user.name}</span>
+							<ChevronDown size={14} />
+						</button>
+						<div class="nav-menu__submenu account-menu__submenu">
+							<span class="nav-menu__label">Account</span>
+							<form method="post" action={localizedPath('/logout')}>
+								<button type="submit"><LogOut size={16} /> Sign out</button>
+							</form>
+						</div>
+					</div>
+				{:else}
+					<a href={localizedPath('/login')}><LogIn size={16} /> Sign in</a>
+					<a class="main-nav__primary" href={localizedPath('/register')}
+						><UserPlus size={16} /> Create account</a
+					>
+				{/if}
+				<div class="nav-menu language-menu">
+					<button
+						class="nav-menu__toggle language-menu__toggle"
+						aria-label="Change language"
+						aria-haspopup="true"
+					>
+						<Globe size={16} /> <span class="language-menu__name">{languageNames[locale]}</span>
+						<ChevronDown size={14} />
 					</button>
-					<div class="language-menu__submenu">
+					<div class="nav-menu__submenu language-menu__submenu">
+						<span class="nav-menu__label">Language</span>
 						{#each locales as language (language)}
 							<a
 								href={resolve(localizeHref(page.url.pathname, { locale: language }) as Pathname)}
@@ -72,45 +158,6 @@
 						{/each}
 					</div>
 				</div>
-				{#if data.user}
-					<a href={localizedPath('/registration-application')}><FileText size={16} /> Application</a>
-					{#if data.user.role === 'admin'}
-						<div class="admin-menu">
-							<button class="admin-menu__toggle">
-								<Shield size={16} /> Admin <ChevronDown size={14} />
-							</button>
-							<div class="admin-menu__submenu">
-								<a href={localizedPath('/admin/users')}><Users size={16} /> Users</a>
-								<a href={localizedPath('/admin/registration-applications')}><ClipboardList size={16} /> Applications</a>
-								<a href={localizedPath('/admin/parameters')}><Settings size={16} /> Parameters</a>
-								<a href={localizedPath('/admin/sessions')}><Calendar size={16} /> Sessions</a>
-								<a href={localizedPath('/admin/establishments')}><Building2 size={16} /> Establishments</a>
-								<a href={localizedPath('/admin/faculties')}><School size={16} /> Faculties</a>
-								<a href={localizedPath('/admin/domaines')}><FolderOpen size={16} /> Domaines</a>
-								<a href={localizedPath('/admin/specialities')}><Sparkles size={16} /> Specialities</a>
-							</div>
-						</div>
-					{:else if data.user.role === 'adminfac'}
-						<div class="admin-menu">
-							<button class="admin-menu__toggle">
-								<Shield size={16} /> Faculty Admin <ChevronDown size={14} />
-							</button>
-							<div class="admin-menu__submenu">
-								<a href={localizedPath('/admin/registration-applications')}><ClipboardList size={16} /> Applications</a>
-								<a href={localizedPath('/admin/faculties')}><School size={16} /> My Faculty</a>
-								<a href={localizedPath('/admin/domaines')}><FolderOpen size={16} /> Domaines</a>
-								<a href={localizedPath('/admin/specialities')}><Sparkles size={16} /> Specialities</a>
-							</div>
-						</div>
-					{/if}
-					<span class="main-nav__user"><User size={16} /> {data.user.name}</span>
-					<form method="post" action={localizedPath('/logout')}>
-						<button type="submit"><LogOut size={16} /> Sign out</button>
-					</form>
-				{:else}
-					<a href={localizedPath('/login')}><LogIn size={16} /> Sign in</a>
-					<a class="main-nav__primary" href={localizedPath('/register')}><UserPlus size={16} /> Create account</a>
-				{/if}
 			</nav>
 		</div>
 	</header>
