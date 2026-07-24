@@ -5,10 +5,9 @@
 	import * as m from '$lib/paraglide/messages.js';
 	import { baseLocale, extractLocaleFromUrl, locales, localizeHref } from '$lib/paraglide/runtime';
 	import './layout.css';
-	import favicon from '$lib/assets/favicon.svg';
+	import ufasLogo from '../../docs/logo-ufas.svg';
 	import type { LayoutData } from './$types';
 	import {
-		GraduationCap,
 		Home,
 		Globe,
 		ChevronDown,
@@ -37,6 +36,10 @@
 		en: 'English'
 	};
 	const localizedPath = (path: Pathname) => resolve(localizeHref(path, { locale }) as Pathname);
+	const formatDate = (date: string) =>
+		new Intl.DateTimeFormat(locale, { day: '2-digit', month: 'short', year: 'numeric' }).format(
+			new Date(`${date}T00:00:00`)
+		);
 
 	$effect(() => {
 		document.documentElement.lang = locale;
@@ -44,13 +47,13 @@
 	});
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<svelte:head><link rel="icon" href={ufasLogo} /></svelte:head>
 
 <div class="site-shell" lang={locale} dir={direction}>
 	<header class="site-header">
 		<div class="site-header__content">
 			<a class="brand" href={localizedPath('/')} aria-label={m.layout_home_aria()}>
-				<span class="brand__mark" aria-hidden="true"><GraduationCap size={20} /></span>
+				<span class="brand__mark" aria-hidden="true"><img src={ufasLogo} alt="" /></span>
 				<span>Tasdjil</span>
 			</a>
 
@@ -188,8 +191,34 @@
 
 	<footer class="site-footer">
 		<div class="site-footer__content">
-			<p>&copy; {new Date().getFullYear()} Tasdjil</p>
-			<p>{m.layout_footer_tagline()}</p>
+			<div class="site-footer__brand">
+				<img src={ufasLogo} alt="" aria-hidden="true" />
+				<div>
+					<p>&copy; {new Date().getFullYear()} Tasdjil</p>
+					<small>{m.layout_footer_tagline()}</small>
+				</div>
+			</div>
+			{#if data.currentSession}
+				<div class="site-footer__session">
+					<div>
+						<span>{m.layout_footer_current_session()}</span>
+						<strong>{data.currentSession.nameSession}</strong>
+					</div>
+					<div>
+						<span>{m.layout_footer_registration_period()}</span>
+						<strong
+							>{formatDate(data.currentSession.startRegistrationsDate)} – {formatDate(
+								data.currentSession.endRegistrationsDate
+							)}</strong
+						>
+					</div>
+					<span class:session-open={data.currentSession.registrationOpened} class="footer-status">
+						{data.currentSession.registrationOpened
+							? m.layout_footer_registration_open()
+							: m.layout_footer_registration_closed()}
+					</span>
+				</div>
+			{/if}
 		</div>
 	</footer>
 </div>
