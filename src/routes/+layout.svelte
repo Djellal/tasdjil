@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { Pathname } from '$app/types';
-	import { resolve } from '$app/paths';
+	import { base, resolve } from '$app/paths';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import * as m from '$lib/paraglide/messages.js';
 	import { baseLocale, extractLocaleFromUrl, locales, localizeHref } from '$lib/paraglide/runtime';
 	import './layout.css';
-	import ufasLogo from '../../docs/logo-ufas.svg';
 	import type { LayoutData } from './$types';
 	import {
 		Home,
@@ -35,11 +35,18 @@
 		fr: 'Français',
 		en: 'English'
 	};
+	const ufasLogo = `${base}/logo-ufas.svg`;
 	const localizedPath = (path: Pathname) => resolve(localizeHref(path, { locale }) as Pathname);
 	const formatDate = (date: string) =>
 		new Intl.DateTimeFormat(locale, { day: '2-digit', month: 'short', year: 'numeric' }).format(
 			new Date(`${date}T00:00:00`)
 		);
+	const switchLanguage = (event: MouseEvent, language: (typeof locales)[number]) => {
+		event.preventDefault();
+		if (language !== locale) {
+			void goto(resolve(localizeHref(page.url.pathname, { locale: language }) as Pathname));
+		}
+	};
 
 	$effect(() => {
 		document.documentElement.lang = locale;
@@ -175,6 +182,7 @@
 								hreflang={language}
 								lang={language}
 								aria-current={language === locale ? 'page' : undefined}
+								onclick={(event) => switchLanguage(event, language)}
 							>
 								{languageNames[language]}
 							</a>
