@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import type { ActionData, PageData } from './$types';
 	import * as m from '$lib/paraglide/messages.js';
+	import SearchableSelect from '$lib/components/SearchableSelect.svelte';
 	import {
 		CalendarDays,
 		User,
@@ -85,7 +86,10 @@
 				class:session-status--open={data.currentSession.registrationOpened}
 				class="session-status"
 			>
-				<Circle size={10} /> {data.currentSession.registrationOpened ? m.reg_app_session_open() : m.reg_app_session_closed()}
+				<Circle size={10} />
+				{data.currentSession.registrationOpened
+					? m.reg_app_session_open()
+					: m.reg_app_session_closed()}
 			</span>
 		{/if}
 	</header>
@@ -104,13 +108,15 @@
 
 	{#if !data.currentSession}
 		<p class="alert alert--error">
-			<AlertCircle size={18} /> {m.reg_app_alert_no_session()}
+			<AlertCircle size={18} />
+			{m.reg_app_alert_no_session()}
 		</p>
 	{:else if !data.currentSession.registrationOpened}
 		<p class="alert alert--error"><AlertCircle size={18} /> {m.reg_app_alert_session_closed()}</p>
 	{:else if data.application?.isProcessed && data.isOwnApplication}
 		<p class="alert alert--info">
-			<Info size={18} /> {m.reg_app_alert_processed()}
+			<Info size={18} />
+			{m.reg_app_alert_processed()}
 		</p>
 	{/if}
 
@@ -133,7 +139,9 @@
 						>
 							<span>{item.studentName}</span>
 							<small class:review-status--processed={item.isProcessed}
-								>{item.isProcessed ? m.reg_apps_status_processed() : m.reg_apps_status_pending()}</small
+								>{item.isProcessed
+									? m.reg_apps_status_processed()
+									: m.reg_apps_status_pending()}</small
 							>
 						</button>
 					</form>
@@ -144,11 +152,11 @@
 
 	<form method="post" action="?/save" enctype="multipart/form-data">
 		<fieldset disabled={!canEdit}>
-		<section class="application-panel session-panel">
-			<div class="panel-heading">
-				<span class="section-number" aria-hidden="true"><CalendarDays size={18} /></span>
-				<div>
-					<h2>{m.reg_app_session_panel_title()}</h2>
+			<section class="application-panel session-panel">
+				<div class="panel-heading">
+					<span class="section-number" aria-hidden="true"><CalendarDays size={18} /></span>
+					<div>
+						<h2>{m.reg_app_session_panel_title()}</h2>
 						<p>{m.reg_app_session_panel_intro()}</p>
 					</div>
 				</div>
@@ -158,11 +166,11 @@
 				</label>
 			</section>
 
-		<section class="application-panel">
-			<div class="panel-heading">
-				<span class="section-number" aria-hidden="true"><User size={18} /></span>
-				<div>
-					<h2>{m.reg_apps_section_personal()}</h2>
+			<section class="application-panel">
+				<div class="panel-heading">
+					<span class="section-number" aria-hidden="true"><User size={18} /></span>
+					<div>
+						<h2>{m.reg_apps_section_personal()}</h2>
 						<p>{m.reg_app_personal_intro()}</p>
 					</div>
 				</div>
@@ -224,24 +232,31 @@
 				</div>
 			</section>
 
-		<section class="application-panel">
-			<div class="panel-heading">
-				<span class="section-number" aria-hidden="true"><BookOpen size={18} /></span>
-				<div>
-					<h2>{m.reg_apps_section_academic()}</h2>
+			<section class="application-panel">
+				<div class="panel-heading">
+					<span class="section-number" aria-hidden="true"><BookOpen size={18} /></span>
+					<div>
+						<h2>{m.reg_apps_section_academic()}</h2>
 						<p>{m.reg_app_academic_intro()}</p>
 					</div>
 				</div>
 				<div class="application-grid">
-					<label class="application-field">
-						{m.reg_apps_field_establishment()}
-						<select name="establishmentId" value={data.application?.establishmentId} required>
-							<option value="" disabled>{m.reg_app_select_establishment()}</option>
-							{#each data.establishments as establishment (establishment.id)}
-								<option value={establishment.id}>{establishment.name}</option>
-							{/each}
-						</select>
-					</label>
+					<div class="application-field">
+						<span>{m.reg_apps_field_establishment()}</span>
+						<SearchableSelect
+							name="establishmentId"
+							value={data.application?.establishmentId ?? ''}
+							options={data.establishments.map((establishment) => ({
+								value: establishment.id,
+								label: establishment.name
+							}))}
+							placeholder={m.reg_app_select_establishment()}
+							label={m.reg_apps_field_establishment()}
+							searchPlaceholder={m.reg_app_search_options()}
+							noResults={m.reg_app_no_search_results()}
+							required
+						/>
+					</div>
 					<label class="application-field"
 						>{m.reg_apps_field_field_of_study()}<input
 							name="fieldOfStudy"
@@ -347,11 +362,11 @@
 				</div>
 			</section>
 
-		<section class="application-panel program-panel">
-			<div class="panel-heading">
-				<span class="section-number" aria-hidden="true"><Target size={18} /></span>
-				<div>
-					<h2>{m.reg_apps_section_program()}</h2>
+			<section class="application-panel program-panel">
+				<div class="panel-heading">
+					<span class="section-number" aria-hidden="true"><Target size={18} /></span>
+					<div>
+						<h2>{m.reg_apps_section_program()}</h2>
 						<p>{m.reg_app_program_intro()}</p>
 					</div>
 				</div>
@@ -368,43 +383,61 @@
 							{#each data.studyLevels as level (level)}<option value={level}>{level}</option>{/each}
 						</select>
 					</label>
-					<label class="application-field">
-						{m.reg_apps_domain_label()}
-						<select
+					<div class="application-field">
+						<span>{m.reg_apps_domain_label()}</span>
+						<SearchableSelect
 							name="domainId"
 							bind:value={selectedDomainId}
 							onchange={resetPreferences}
 							disabled={!selectedRequestedLevel}
+							options={relatedDomains.map((domain) => ({ value: domain.id, label: domain.name }))}
+							placeholder={m.reg_app_select_domain()}
+							label={m.reg_apps_domain_label()}
+							searchPlaceholder={m.reg_app_search_options()}
+							noResults={m.reg_app_no_search_results()}
 							required
-						>
-							<option value="" disabled>{m.reg_app_select_domain()}</option>
-							{#each relatedDomains as domain (domain.id)}
-								<option value={domain.id}>{domain.name}</option>
-							{/each}
-						</select>
-					</label>
+						/>
+					</div>
 					{#each [1, 2, 3] as preference (preference)}
-						<label class="application-field">
-							{m.reg_app_preference({ n: preference })}
-							<select
+						<div class="application-field">
+							<span class="preference-label"
+								><b>{preference}</b> {m.reg_app_preference({ n: preference })}</span
+							>
+							<SearchableSelect
 								name={`preference${preference}`}
 								bind:value={selectedPreferences[preference - 1]}
 								disabled={!selectedDomainId}
+								options={relatedSpecialities.map((speciality) => ({
+									value: speciality.id,
+									label: speciality.name
+								}))}
+								placeholder={m.reg_app_select_speciality()}
+								label={m.reg_app_preference({ n: preference })}
+								searchPlaceholder={m.reg_app_search_options()}
+								noResults={m.reg_app_no_search_results()}
 								required
-							>
-								<option value="" disabled>{m.reg_app_select_speciality()}</option>
-								{#each relatedSpecialities as speciality (speciality.id)}
-									<option value={speciality.id}>{speciality.name}</option>
-								{/each}
-							</select>
-						</label>
+							/>
+						</div>
 					{/each}
-					<label class="application-field">
-						<Paperclip size={14} /> {m.reg_app_attachment()}
+				</div>
+			</section>
+
+			<section class="application-panel attachment-panel">
+				<div class="panel-heading">
+					<span class="section-number" aria-hidden="true"><Upload size={18} /></span>
+					<div>
+						<h2>{m.reg_app_attachment()}</h2>
+						<p>{m.reg_app_required_documents()}</p>
+					</div>
+				</div>
+				<div class="attachment-content">
+					<p class="document-notice"><Info size={17} /> {m.reg_app_merge_pdf_notice()}</p>
+					<label class="application-field attachment-field">
+						<span><Paperclip size={14} /> {m.reg_app_pdf_file()}</span>
 						<input
 							type="file"
 							name="attachment"
-							accept="application/pdf,image/jpeg,image/png,image/webp"
+							accept="application/pdf"
 							required={!data.application?.attachment}
 						/>
 						<small>{m.reg_app_attachment_hint()}</small>
@@ -419,17 +452,18 @@
 				</div>
 			</section>
 
-		{#if canEdit}
-			<div class="form-actions">
-				<div>
-					<strong>{data.application ? m.reg_app_save_prompt() : m.reg_app_apply_prompt()}</strong>
-					<span>{m.reg_app_save_hint()}</span>
+			{#if canEdit}
+				<div class="form-actions">
+					<div>
+						<strong>{data.application ? m.reg_app_save_prompt() : m.reg_app_apply_prompt()}</strong>
+						<span>{m.reg_app_save_hint()}</span>
+					</div>
+					<button class="submit-button" type="submit"
+						><Send size={16} />
+						{data.application ? m.reg_app_update_button() : m.reg_app_submit_button()}</button
+					>
 				</div>
-				<button class="submit-button" type="submit"
-					><Send size={16} /> {data.application ? m.reg_app_update_button() : m.reg_app_submit_button()}</button
-				>
-			</div>
-		{/if}
+			{/if}
 		</fieldset>
 	</form>
 
@@ -457,16 +491,21 @@
 					</select>
 				</label>
 				<label class="application-field administration-form__remark"
-					>{m.reg_apps_field_remark()}<textarea name="remark" rows="3">{data.application.remark ?? ''}</textarea></label
+					>{m.reg_apps_field_remark()}<textarea name="remark" rows="3"
+						>{data.application.remark ?? ''}</textarea
+					></label
 				>
 				<label class="application-field"
-					>{m.reg_apps_field_processed()}<input value={data.application.isProcessed ? m.reg_apps_yes() : m.reg_apps_no()} readonly /></label
+					>{m.reg_apps_field_processed()}<input
+						value={data.application.isProcessed ? m.reg_apps_yes() : m.reg_apps_no()}
+						readonly
+					/></label
 				>
-				<button class="submit-button" type="submit"><CheckCircle size={16} /> {m.reg_apps_save_decision()}</button>
+				<button class="submit-button" type="submit"
+					><CheckCircle size={16} /> {m.reg_apps_save_decision()}</button
+				>
 			</form>
-			<small
-				>{m.reg_app_admin_notice()}</small
-			>
+			<small>{m.reg_app_admin_notice()}</small>
 		</section>
 	{/if}
 </div>
@@ -639,12 +678,51 @@
 	}
 	.program-panel {
 		border-color: #c7d2fe;
-		box-shadow: 0 0.5rem 2rem rgb(79 70 229 / 7%);
+		background: linear-gradient(155deg, #ffffff 55%, #f8faff 100%);
+		box-shadow: 0 0.75rem 2.5rem rgb(79 70 229 / 9%);
 	}
 	.program-panel .section-number {
 		background: #eef2ff;
 		color: #4f46e5;
 		box-shadow: inset 0 0 0 1px #c7d2fe;
+	}
+	.attachment-panel {
+		border-color: #bae6fd;
+		background: linear-gradient(150deg, #ffffff 50%, #f0f9ff 100%);
+	}
+	.attachment-panel .section-number {
+		background: #e0f2fe;
+		color: #0369a1;
+		box-shadow: inset 0 0 0 1px #bae6fd;
+	}
+	.attachment-content {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(18rem, 1fr);
+		align-items: start;
+		gap: 1.5rem;
+	}
+	.document-notice {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.65rem;
+		margin: 0;
+		border: 1px solid #bae6fd;
+		border-radius: 0.75rem;
+		background: #f0f9ff;
+		padding: 0.9rem 1rem;
+		color: #075985;
+		font-size: 0.85rem;
+		font-weight: 600;
+		line-height: 1.55;
+	}
+	.document-notice :global(svg) {
+		flex: 0 0 auto;
+		margin-top: 0.1rem;
+	}
+	.attachment-field > span {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
 	}
 	.application-grid,
 	.averages,
@@ -681,6 +759,21 @@
 		color: #334155;
 		font-size: 0.8rem;
 		font-weight: 700;
+	}
+	.preference-label {
+		display: flex;
+		align-items: center;
+		gap: 0.45rem;
+	}
+	.preference-label b {
+		display: inline-grid;
+		width: 1.3rem;
+		height: 1.3rem;
+		place-items: center;
+		border-radius: 999px;
+		background: #eef2ff;
+		color: #4f46e5;
+		font-size: 0.68rem;
 	}
 	.application-field input,
 	.application-field select,
@@ -891,6 +984,9 @@
 		.averages,
 		.administration-form {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		.attachment-content {
+			grid-template-columns: 1fr;
 		}
 	}
 	@media (max-width: 36rem) {
