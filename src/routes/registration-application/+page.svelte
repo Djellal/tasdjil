@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import type { ActionData, PageData } from './$types';
+	import * as m from '$lib/paraglide/messages.js';
 	import {
 		CalendarDays,
 		User,
@@ -70,21 +71,21 @@
 	}
 </script>
 
-<svelte:head><title>Registration application | Tasdjil</title></svelte:head>
+<svelte:head><title>{m.reg_app_meta_title()}</title></svelte:head>
 
 <div class="application-page" lang="en" dir="ltr">
 	<header class="application-header">
 		<div class="application-header__content">
-			<span class="application-eyebrow">Student admissions</span>
-			<h1>Registration application</h1>
-			<p>Complete your academic profile and choose the program that best fits your goals.</p>
+			<span class="application-eyebrow">{m.reg_app_header_eyebrow()}</span>
+			<h1>{m.reg_app_title()}</h1>
+			<p>{m.reg_app_intro()}</p>
 		</div>
 		{#if data.currentSession}
 			<span
 				class:session-status--open={data.currentSession.registrationOpened}
 				class="session-status"
 			>
-				<Circle size={10} /> {data.currentSession.registrationOpened ? 'Registration open' : 'Registration closed'}
+				<Circle size={10} /> {data.currentSession.registrationOpened ? m.reg_app_session_open() : m.reg_app_session_closed()}
 			</span>
 		{/if}
 	</header>
@@ -103,13 +104,13 @@
 
 	{#if !data.currentSession}
 		<p class="alert alert--error">
-			<AlertCircle size={18} /> No current registration session is configured. Applications are disabled.
+			<AlertCircle size={18} /> {m.reg_app_alert_no_session()}
 		</p>
 	{:else if !data.currentSession.registrationOpened}
-		<p class="alert alert--error"><AlertCircle size={18} /> The current session is closed. The application is read-only.</p>
+		<p class="alert alert--error"><AlertCircle size={18} /> {m.reg_app_alert_session_closed()}</p>
 	{:else if data.application?.isProcessed && data.isOwnApplication}
 		<p class="alert alert--info">
-			<Info size={18} /> This application has been processed and can no longer be edited.
+			<Info size={18} /> {m.reg_app_alert_processed()}
 		</p>
 	{/if}
 
@@ -118,8 +119,8 @@
 			<div class="panel-heading">
 				<span class="section-number" aria-hidden="true"><ShieldCheck size={18} /></span>
 				<div>
-					<h2>Applications to review</h2>
-					<p>Select a student application to review its details and decision status.</p>
+					<h2>{m.reg_app_review_title()}</h2>
+					<p>{m.reg_app_review_intro()}</p>
 				</div>
 			</div>
 			<div class="review-list">
@@ -132,7 +133,7 @@
 						>
 							<span>{item.studentName}</span>
 							<small class:review-status--processed={item.isProcessed}
-								>{item.isProcessed ? 'Processed' : 'Pending'}</small
+								>{item.isProcessed ? m.reg_apps_status_processed() : m.reg_apps_status_pending()}</small
 							>
 						</button>
 					</form>
@@ -147,13 +148,13 @@
 			<div class="panel-heading">
 				<span class="section-number" aria-hidden="true"><CalendarDays size={18} /></span>
 				<div>
-					<h2>Registration session</h2>
-						<p>Your application will be attached to the active admissions period.</p>
+					<h2>{m.reg_app_session_panel_title()}</h2>
+						<p>{m.reg_app_session_panel_intro()}</p>
 					</div>
 				</div>
 				<label class="application-field">
-					Current session
-					<input value={data.currentSession?.nameSession ?? 'No current session'} readonly />
+					{m.reg_app_current_session()}
+					<input value={data.currentSession?.nameSession ?? m.reg_app_no_session()} readonly />
 				</label>
 			</section>
 
@@ -161,27 +162,27 @@
 			<div class="panel-heading">
 				<span class="section-number" aria-hidden="true"><User size={18} /></span>
 				<div>
-					<h2>Personal information</h2>
-						<p>Enter your identity details exactly as they appear on official documents.</p>
+					<h2>{m.reg_apps_section_personal()}</h2>
+						<p>{m.reg_app_personal_intro()}</p>
 					</div>
 				</div>
 				<div class="application-grid">
 					<label class="application-field"
-						>Last name<input
+						>{m.reg_apps_field_last_name()}<input
 							name="lastName"
 							value={data.application?.lastName ?? ''}
 							required
 						/></label
 					>
 					<label class="application-field"
-						>First name<input
+						>{m.reg_apps_field_first_name()}<input
 							name="firstName"
 							value={data.application?.firstName ?? ''}
 							required
 						/></label
 					>
 					<label class="application-field"
-						>Last name (Arabic)<input
+						>{m.reg_apps_field_last_name_ar()}<input
 							name="lastNameAr"
 							value={data.application?.lastNameAr ?? ''}
 							dir="rtl"
@@ -189,7 +190,7 @@
 						/></label
 					>
 					<label class="application-field"
-						>First name (Arabic)<input
+						>{m.reg_apps_field_first_name_ar()}<input
 							name="firstNameAr"
 							value={data.application?.firstNameAr ?? ''}
 							dir="rtl"
@@ -197,7 +198,7 @@
 						/></label
 					>
 					<label class="application-field"
-						>Date of birth<input
+						>{m.reg_apps_field_date_of_birth()}<input
 							type="date"
 							name="dateOfBirth"
 							value={data.application?.dateOfBirth ?? ''}
@@ -205,14 +206,14 @@
 						/></label
 					>
 					<label class="application-field"
-						>Place of birth<input
+						>{m.reg_apps_field_place_of_birth()}<input
 							name="placeOfBirth"
 							value={data.application?.placeOfBirth ?? ''}
 							required
 						/></label
 					>
 					<label class="application-field"
-						>Phone number<input
+						>{m.reg_apps_field_phone()}<input
 							type="tel"
 							name="phoneNumber"
 							value={data.application?.phoneNumber ?? ''}
@@ -227,36 +228,36 @@
 			<div class="panel-heading">
 				<span class="section-number" aria-hidden="true"><BookOpen size={18} /></span>
 				<div>
-					<h2>Academic history</h2>
-						<p>Tell us about your previous studies, results, and educational system.</p>
+					<h2>{m.reg_apps_section_academic()}</h2>
+						<p>{m.reg_app_academic_intro()}</p>
 					</div>
 				</div>
 				<div class="application-grid">
 					<label class="application-field">
-						Establishment
+						{m.reg_apps_field_establishment()}
 						<select name="establishmentId" value={data.application?.establishmentId} required>
-							<option value="" disabled>Select an establishment</option>
+							<option value="" disabled>{m.reg_app_select_establishment()}</option>
 							{#each data.establishments as establishment (establishment.id)}
 								<option value={establishment.id}>{establishment.name}</option>
 							{/each}
 						</select>
 					</label>
 					<label class="application-field"
-						>Field of study<input
+						>{m.reg_apps_field_field_of_study()}<input
 							name="fieldOfStudy"
 							value={data.application?.fieldOfStudy ?? ''}
 							required
 						/></label
 					>
 					<label class="application-field"
-						>Specialization<input
+						>{m.reg_apps_field_specialization()}<input
 							name="specialization"
 							value={data.application?.specialization ?? ''}
 							required
 						/></label
 					>
 					<label class="application-field"
-						>Graduation year<input
+						>{m.reg_apps_field_graduation_year()}<input
 							type="number"
 							name="graduationYear"
 							min="1900"
@@ -266,7 +267,7 @@
 						/></label
 					>
 					<label class="application-field"
-						>Baccalaureate year<input
+						>{m.reg_apps_field_baccalaureate_year()}<input
 							type="number"
 							name="baccalaureateYear"
 							min="1900"
@@ -276,14 +277,14 @@
 						/></label
 					>
 					<label class="application-field"
-						>Baccalaureate number<input
+						>{m.reg_apps_field_baccalaureate_number()}<input
 							name="baccalaureateNumber"
 							value={data.application?.baccalaureateNumber ?? ''}
 							required
 						/></label
 					>
 					<label class="application-field">
-						Educational system
+						{m.reg_apps_field_educational_system()}
 						<select name="educationalSystem" bind:value={selectedSystem} required>
 							{#each data.educationalSystems as system (system)}
 								<option value={system}>{system}</option>
@@ -294,13 +295,13 @@
 
 				<div class="academic-results">
 					<div class="subsection-heading">
-						<strong>Annual results</strong>
-						<span>Enter each average on a scale from 0 to 20.</span>
+						<strong>{m.reg_app_annual_results()}</strong>
+						<span>{m.reg_app_annual_results_hint()}</span>
 					</div>
 					<div class="averages">
 						{#each Array.from({ length: visibleAverageYears }, (_, index) => index + 1) as year (year)}
 							<label class="application-field">
-								General average — year {year}
+								{m.reg_app_average_year({ year })}
 								<input
 									type="number"
 									name={`generalAverageYear${year}`}
@@ -317,7 +318,7 @@
 
 				<div class="application-grid">
 					<label class="application-field"
-						>Admissions after makeup exams<input
+						>{m.reg_apps_field_makeup_exams()}<input
 							type="number"
 							name="admissionsAfterMakeupExamsCount"
 							min="0"
@@ -326,7 +327,7 @@
 						/></label
 					>
 					<label class="application-field"
-						>Admissions with debts<input
+						>{m.reg_apps_field_debts()}<input
 							type="number"
 							name="admissionsWithDebtsCount"
 							min="0"
@@ -335,7 +336,7 @@
 						/></label
 					>
 					<label class="application-field"
-						>Repeated years<input
+						>{m.reg_apps_field_repeated_years()}<input
 							type="number"
 							name="repeatedYearsCount"
 							min="0"
@@ -350,25 +351,25 @@
 			<div class="panel-heading">
 				<span class="section-number" aria-hidden="true"><Target size={18} /></span>
 				<div>
-					<h2>Requested program</h2>
-						<p>Choose a level and domaine first, then rank your preferred specialities.</p>
+					<h2>{m.reg_apps_section_program()}</h2>
+						<p>{m.reg_app_program_intro()}</p>
 					</div>
 				</div>
 				<div class="application-grid">
 					<label class="application-field">
-						Requested level
+						{m.reg_apps_field_requested_level()}
 						<select
 							name="requestedLevel"
 							bind:value={selectedRequestedLevel}
 							onchange={resetRequestedProgram}
 							required
 						>
-							<option value="" disabled>Select a level</option>
+							<option value="" disabled>{m.reg_app_select_level()}</option>
 							{#each data.studyLevels as level (level)}<option value={level}>{level}</option>{/each}
 						</select>
 					</label>
 					<label class="application-field">
-						Domaine
+						{m.reg_apps_domain_label()}
 						<select
 							name="domainId"
 							bind:value={selectedDomainId}
@@ -376,7 +377,7 @@
 							disabled={!selectedRequestedLevel}
 							required
 						>
-							<option value="" disabled>Select a domaine</option>
+							<option value="" disabled>{m.reg_app_select_domain()}</option>
 							{#each relatedDomains as domain (domain.id)}
 								<option value={domain.id}>{domain.name}</option>
 							{/each}
@@ -384,14 +385,14 @@
 					</label>
 					{#each [1, 2, 3] as preference (preference)}
 						<label class="application-field">
-							Preference {preference}
+							{m.reg_app_preference({ n: preference })}
 							<select
 								name={`preference${preference}`}
 								bind:value={selectedPreferences[preference - 1]}
 								disabled={!selectedDomainId}
 								required
 							>
-								<option value="" disabled>Select a speciality</option>
+								<option value="" disabled>{m.reg_app_select_speciality()}</option>
 								{#each relatedSpecialities as speciality (speciality.id)}
 									<option value={speciality.id}>{speciality.name}</option>
 								{/each}
@@ -399,36 +400,36 @@
 						</label>
 					{/each}
 					<label class="application-field">
-						<Paperclip size={14} /> Supporting attachment
+						<Paperclip size={14} /> {m.reg_app_attachment()}
 						<input
 							type="file"
 							name="attachment"
 							accept="application/pdf,image/jpeg,image/png,image/webp"
 							required={!data.application?.attachment}
 						/>
-						<small>PDF, JPEG, PNG, or WebP; maximum 10 MB.</small>
+						<small>{m.reg_app_attachment_hint()}</small>
 						{#if data.application?.attachment}<a
 								href={resolve('/registration-application/[id]/attachment', {
 									id: String(data.application.id)
 								})}
 								target="_blank"
-								rel="noopener noreferrer"><Paperclip size={14} /> View current attachment</a
+								rel="noopener noreferrer"><Paperclip size={14} /> {m.reg_app_view_attachment()}</a
 							>{/if}
 					</label>
 				</div>
 			</section>
 
-			{#if canEdit}
-				<div class="form-actions">
-					<div>
-						<strong>{data.application ? 'Ready to save your changes?' : 'Ready to apply?'}</strong>
-						<span>Review your details before submitting the application.</span>
-					</div>
-					<button class="submit-button" type="submit"
-						><Send size={16} /> {data.application ? 'Update application' : 'Submit application'}</button
-					>
+		{#if canEdit}
+			<div class="form-actions">
+				<div>
+					<strong>{data.application ? m.reg_app_save_prompt() : m.reg_app_apply_prompt()}</strong>
+					<span>{m.reg_app_save_hint()}</span>
 				</div>
-			{/if}
+				<button class="submit-button" type="submit"
+					><Send size={16} /> {data.application ? m.reg_app_update_button() : m.reg_app_submit_button()}</button
+				>
+			</div>
+		{/if}
 		</fieldset>
 	</form>
 
@@ -437,34 +438,34 @@
 			<div class="panel-heading">
 				<span class="section-number" aria-hidden="true"><ShieldCheck size={18} /></span>
 				<div>
-					<h2>Administration decision</h2>
-					<p>This panel is restricted to admin and faculty-admin roles.</p>
+					<h2>{m.reg_app_admin_title()}</h2>
+					<p>{m.reg_app_admin_intro()}</p>
 				</div>
 			</div>
 			<form class="administration-form" method="post" action="?/process">
 				<input type="hidden" name="id" value={data.application.id} />
 				<label class="application-field">
-					Decision
+					{m.reg_apps_field_decision()}
 					<select
 						name="isAccepted"
 						value={data.application.isProcessed ? String(data.application.isAccepted) : ''}
 						required
 					>
-						<option value="" disabled>Select a decision</option>
-						<option value="true">Accepted</option>
-						<option value="false">Rejected</option>
+						<option value="" disabled>{m.reg_apps_decision_placeholder()}</option>
+						<option value="true">{m.reg_app_accepted()}</option>
+						<option value="false">{m.reg_app_rejected()}</option>
 					</select>
 				</label>
 				<label class="application-field administration-form__remark"
-					>Remark<textarea name="remark" rows="3">{data.application.remark ?? ''}</textarea></label
+					>{m.reg_apps_field_remark()}<textarea name="remark" rows="3">{data.application.remark ?? ''}</textarea></label
 				>
 				<label class="application-field"
-					>Processed<input value={data.application.isProcessed ? 'Yes' : 'No'} readonly /></label
+					>{m.reg_apps_field_processed()}<input value={data.application.isProcessed ? m.reg_apps_yes() : m.reg_apps_no()} readonly /></label
 				>
-				<button class="submit-button" type="submit"><CheckCircle size={16} /> Save decision</button>
+				<button class="submit-button" type="submit"><CheckCircle size={16} /> {m.reg_apps_save_decision()}</button>
 			</form>
 			<small
-				>Saving either acceptance decision automatically marks the application as processed.</small
+				>{m.reg_app_admin_notice()}</small
 			>
 		</section>
 	{/if}
